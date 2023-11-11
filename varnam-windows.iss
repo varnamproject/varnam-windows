@@ -29,13 +29,13 @@ WizardStyle=modern
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-Source: "varnam-windows\govarnam\windows-build.bat"; DestDir: "{app}"; Flags: ignoreversion
+Source: "govarnam\windows-build.bat"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\lib\libgovarnam.dll"; DestDir: "C:\lib"; Flags: ignoreversion
 Source: "C:\lib\libgovarnam.lib"; DestDir: "C:\lib"; Flags: ignoreversion
-Source: "varnam-windows\cpp\x64\Debug\Varnam Windows.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "varnam-windows\cpp\x64\Debug\Varnam Windows.exp"; DestDir: "{app}"; Flags: ignoreversion
-Source: "varnam-windows\cpp\x64\Debug\Varnam Windows.lib"; DestDir: "{app}"; Flags: ignoreversion
-Source: "varnam-windows\cpp\x64\Debug\Varnam Windows.pdb"; DestDir: "{app}"; Flags: ignoreversion
+Source: "cpp\x64\Debug\Varnam Windows.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "cpp\x64\Debug\Varnam Windows.exp"; DestDir: "{app}"; Flags: ignoreversion
+Source: "cpp\x64\Debug\Varnam Windows.lib"; DestDir: "{app}"; Flags: ignoreversion
+Source: "cpp\x64\Debug\Varnam Windows.pdb"; DestDir: "{app}"; Flags: ignoreversion
 
 [Run]
 Filename: "{app}\windows-build.bat"; Parameters: ""; Flags: runhidden; StatusMsg: "Updating Govarnam schemes..."
