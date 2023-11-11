@@ -1,0 +1,51 @@
+name: Go
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-20.04
+    env:
+      VARNAM_UPSTREAM: https://varnam.subinsb.com
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.16
+
+      - name: Build
+        run: make
+
+      - name: Set env
+        run: echo "VARNAM_VST_DIR=$(echo $(realpath schemes))" >> $GITHUB_ENV
+
+      - name: Download schemes
+        run: |
+          mkdir schemes
+          wget -O $VARNAM_VST_DIR/ml.vst "$VARNAM_UPSTREAM/languages/ml/download"
+          wget -O $VARNAM_VST_DIR/ml-inscript.vst "$VARNAM_UPSTREAM/languages/ml-inscript/download"
+
+      - name: Test
+        run: make test
+
+      - name: Make Zip
+        run: |
+          make
+          make release
+
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: govarnam
+          path: "*.zip"

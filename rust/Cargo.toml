@@ -1,0 +1,12 @@
+[workspace]
+resolver = "2"
+members = [
+    "composition_processor",
+    "dictionary_parser",
+    "globals",
+    "ime",
+    "input_processor",
+    "itf_components",
+    "numberkey_windows",
+    "ruststringrange"
+]

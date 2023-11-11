@@ -1,0 +1,18 @@
+[package]
+name = "numberkey_windows"
+version = "0.1.0"
+authors = ["Kagami Sascha Rosylight <saschanaz@outlook.com>"]
+edition = "2021"
+
+[lib]
+name = "numberkey_windows"
+crate-type = ["rlib", "staticlib"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+[dependencies.windows]
+version = "0.48.0"
+features = [
+  "Win32_UI_Input_KeyboardAndMouse",
+]

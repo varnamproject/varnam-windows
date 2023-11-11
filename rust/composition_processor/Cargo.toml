@@ -1,0 +1,33 @@
+[package]
+name = "composition_processor"
+version = "0.1.0"
+authors = ["Kagami Sascha Rosylight <saschanaz@outlook.com>"]
+edition = "2021"
+
+[lib]
+name = "composition_processor"
+crate-type = ["staticlib", "rlib"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+ime = { path = "../ime" }
+dictionary_parser = { path = "../dictionary_parser" }
+ruststringrange = { path = "../ruststringrange" }
+numberkey_windows = { path = "../numberkey_windows" }
+globals = { path = "../globals" }
+itf_components = { path = "../itf_components" }
+once_cell = "1.18.0"
+dirs = "5.0.1"
+
+govarnam = { path = "../../govarnam-rust", version = "0.1.0" }
+
+
+[dependencies.windows]
+version = "0.48.0"
+features = [
+  "Win32_Foundation",
+  "Win32_System_LibraryLoader",
+  "Win32_UI_Input_KeyboardAndMouse",
+  "Win32_UI_TextServices",
+]

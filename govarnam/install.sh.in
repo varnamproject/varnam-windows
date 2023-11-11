@@ -1,0 +1,41 @@
+#!/bin/bash
+
+set -e
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+ARG1=${1:-install}
+SUDO=${SUDO:-sudo}
+
+if [ "$ARG1" == "install" ]; then
+  "${SUDO}" mkdir -p "/usr/local/bin/"
+  "${SUDO}" cp "$SCRIPT_DIR/varnamcli" "${DESTDIR}@INSTALL_PREFIX@/bin/varnamcli"
+
+  "${SUDO}" mkdir -p "${DESTDIR}@INSTALL_PREFIX@/lib/pkgconfig"
+  "${SUDO}" cp "$SCRIPT_DIR/@LIB_NAME@" "${DESTDIR}@INSTALL_PREFIX@/lib/@LIB_NAME@.@VERSION@"
+  "${SUDO}" ln -sf "${DESTDIR}@INSTALL_PREFIX@/lib/@LIB_NAME@.@VERSION@" "${DESTDIR}@INSTALL_PREFIX@/lib/@LIB_NAME@"
+  "${SUDO}" ln -sf "${DESTDIR}@INSTALL_PREFIX@/lib/@LIB_NAME@.@VERSION@" "${DESTDIR}@INSTALL_PREFIX@/lib/@LIB_NAME@.@SO_NAME@"
+  "${SUDO}" cp "$SCRIPT_DIR/govarnam.pc" "${DESTDIR}@INSTALL_PREFIX@/lib/pkgconfig/"
+
+  "${SUDO}" mkdir -p "${DESTDIR}@INSTALL_PREFIX@/include/libgovarnam"
+  "${SUDO}" cp "$SCRIPT_DIR/"*.h "${DESTDIR}@INSTALL_PREFIX@/include/libgovarnam/"
+  "${SUDO}" ldconfig || true
+
+  "${SUDO}" mkdir -p "${DESTDIR}@INSTALL_PREFIX@/share/varnam/schemes"
+
+  msg="Installation finished"
+  echo "$msg"
+
+  notify-send "$msg" &> /dev/null || true
+elif [ "$ARG1" == "uninstall" ]; then
+  "${SUDO}" rm -f "${DESTDIR}@INSTALL_PREFIX@/bin/varnamcli" "${DESTDIR}@INSTALL_PREFIX@/lib/@LIB_NAME@.@VERSION@" "${DESTDIR}@INSTALL_PREFIX@/lib/@LIB_NAME@" "${DESTDIR}@INSTALL_PREFIX@/lib/pkgconfig/govarnam.pc"
+  "${SUDO}" rm -f "${DESTDIR}@INSTALL_PREFIX@/include/libgovarnam/"*
+  "${SUDO}" rmdir "${DESTDIR}@INSTALL_PREFIX@/include/libgovarnam" || true
+  "${SUDO}" rm -f "${DESTDIR}@INSTALL_PREFIX@/share/varnam/schemes/"* 
+  "${SUDO}" rmdir "${DESTDIR}@INSTALL_PREFIX@/share/varnam/schemes/" || true
+
+  msg="Uninstallation finished"
+  echo $msg
+else
+  echo "Unknown argument"
+fi

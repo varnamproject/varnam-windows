@@ -1,0 +1,8 @@
+libgovarnam.*
+varnam
+varnamcli
+
+install.sh
+govarnam.pc
+
+*.vst

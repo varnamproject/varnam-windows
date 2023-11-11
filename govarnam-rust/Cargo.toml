@@ -1,0 +1,11 @@
+[package]
+name = "govarnam"
+version = "0.1.0"
+edition = "2021"
+
+
+[dependencies]
+libc = "0.2.139"
+
+[target.'cfg(unix)'.dependencies]
+gdb_probe = "0.1.2"

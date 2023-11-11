@@ -1,0 +1,8 @@
+rust/target
+govarnam-rust/target
+cpp/x64/Debug
+.govarnam/
+.vscode/
+.vs/
+
+varnam-windows-install.exe
