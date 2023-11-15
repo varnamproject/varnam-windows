@@ -66,10 +66,10 @@ regsvr32 /u "Varnam Windows.dll"
 - [x] Call the DLL from Rust for transliteration via dynamic linking. This is extended from [govarnam-rust](https://github.com/varnamproject/govarnam-rust).
 - [x] Link the Rust interface and SampleIME CPP to build an IME build dll.
 - [x] Windows Setup Wizard script via Inno Setup.
+- [x] Keyboard Layout shifting (Active/Disable toggle)
+- [x] Resource files for icons (`*.ico`) for Registry Profile. (Currently the SampleIME 'Chinese Simplified' icon resources are loaded)
 - [ ] Language Switching (Currently runs on just [Malayalam VST](https://github.com/varnamproject/schemes/tree/master/schemes/ml))
-        - [ ] Implement the supported CONSTANTS for languages from [`windows_sys::Win32::System::SystemServices`](https://docs.rs/windows-sys/latest/windows_sys/Win32/System/SystemServices/index.html) and trigger language switch on Language Settings change.
-- [ ] Keyboard Layout shifting (Active/Disable toggle)
-- [ ] Resource files for icons (`*.ico`) for Registry Profile. (Currently the SampleIME 'Chinese Simplified' icon resources are loaded)
+  - [ ] Implement the supported CONSTANTS for languages from [`windows_sys::Win32::System::SystemServices`](https://docs.rs/windows-sys/latest/windows_sys/Win32/System/SystemServices/index.html) and trigger language switch on Language Settings change.
 - [ ] 🔴Handle Govarnam `nil pointer dereference` and potential race conditions (due to early freeing?). An example stack trace:
 
 ```
