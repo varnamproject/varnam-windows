@@ -6,10 +6,12 @@ setlocal enabledelayedexpansion
 set "api_url=https://api.github.com/repos/varnamproject/schemes/releases/latest"
 
 :: Set .libvarnam schemes directory path
-set "govarnam_path=C:\Users\%USERNAME%\.libvarnam"
+@REM set "govarnam_path=C:\Users\%USERNAME%\.libvarnam"
 
 :: Set .libvarnam\schemes directory path
-set "schemes_path=%govarnam_path%\schemes"
+@REM set "schemes_path=%govarnam_path%\schemes"
+
+set "schemes_path=%cd%\schemes"
 
 :: Check for the 'update-schemes' command-line argument
 set "should_update=0"

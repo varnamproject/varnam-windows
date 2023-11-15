@@ -39,11 +39,21 @@ use once_cell::sync::Lazy;
 use govarnam::Varnam;
 
 static VARNAM: Lazy<Varnam> = Lazy::new(|| {
-    /// DEBUG
-    /// This should be adaptive to language switches
-    /// Currently using Malayalam VST for debugging
-    let scheme_path = "C:\\Users\\doxop\\.libvarnam\\schemes\\ml\\ml.vst";
-    let learning_path = "C:\\Users\\doxop\\.libvarnam\\schemes\\learnings\\ml.vst.learnings";
+    // DEBUG
+    // This should be adaptive to language switches
+    // Currently using Malayalam VST for debugging
+    let dll_instance_handle = unsafe { ime::dll::DLL_INSTANCE };
+
+    let file_name = unsafe {
+        let mut file_name = [0u16; MAX_PATH as usize];
+        GetModuleFileNameW(dll_instance_handle, &mut file_name);
+        String::from_utf16(&file_name).unwrap()
+    };
+
+    let dir = std::path::Path::new(&file_name[..]).parent().unwrap();
+
+    let scheme_path =  dir.join("schemes/ml/ml.vst");
+    let learning_path = dir.join("schemes/learnings/ml.vst.learnings");
 
     match Varnam::init(
         scheme_path,
@@ -99,10 +109,10 @@ impl CompositionProcessorEngine {
             .init(thread_mgr, client_id, &self.compartment_wrapper)
             .ok();
         unsafe { ime::font::set_default_candidate_text_font() };
-        self.setup_dictionary_file(
-            unsafe { ime::dll::DLL_INSTANCE },
-            ime::resources::TEXTSERVICE_DIC,
-        );
+        // self.setup_dictionary_file(
+        //     unsafe { ime::dll::DLL_INSTANCE },
+        //     ime::resources::TEXTSERVICE_DIC,
+        // );
 
         true
     }
@@ -126,6 +136,8 @@ impl CompositionProcessorEngine {
         let keystroke_buffer = self.keystroke_buffer.get_reading_string();
 
         let results = VARNAM.transliterate(keystroke_buffer.to_owned());
+
+        // let results: Vec<&str> = Vec::from(["stuff", "stuff", "stuff", "stuff"]);
 
         for result in results {
             matches.push((keystroke_buffer.clone(), result.to_string()))
@@ -174,7 +186,7 @@ impl CompositionProcessorEngine {
         Ok(true)
     }
 
-    fn setup_dictionary_file(&mut self, dll_instance_handle: HMODULE, dictionary_file_name: &str) {
+    fn _setup_dictionary_file(&mut self, dll_instance_handle: HMODULE, dictionary_file_name: &str) {
         let file_name = unsafe {
             let mut file_name = [0u16; MAX_PATH as usize];
             GetModuleFileNameW(dll_instance_handle, &mut file_name);

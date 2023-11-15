@@ -6,7 +6,7 @@ pub const TEXTSERVICE_DIC: &str = "SampleIMESimplifiedQuanPinUtf8.txt";
 // defined item in setting file table [PreservedKey] section
 //---------------------------------------------------------------------
 
-pub const IME_MODE_DESCRIPTION: &str = "Chinese/English input (Shift)";
+pub const IME_MODE_DESCRIPTION: &str = "Varnam/English (Shift)";
 pub const IME_MODE_ON_ICO_INDEX: u32 = 21;
 pub const IME_MODE_OFF_ICO_INDEX: u32 = 22;
 

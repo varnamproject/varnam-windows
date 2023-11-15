@@ -1,10 +1,14 @@
 $scriptDir = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
 
+Get-ChildItem -Path $scriptDir -Include *.dll, *.pdb, *.exp -Recurse | ForEach-Object {Remove-Item $_.FullName -Force -Confirm:$false}
+
 pushd $scriptDir/../govarnam
 .\windows-build.bat
 gendef libgovarnam.dll
 lib /def:libgovarnam.def /OUT:libgovarnam.lib /MACHINE:X64
 Copy-Item "libgovarnam.lib" -Destination "C:\lib\libgovarnam.lib"
+Copy-Item "libgovarnam.dll" -Destination "$scriptDir\x64\Debug\libgovarnam.dll"
+Copy-Item "libgovarnam.lib" -Destination "$scriptDir\x64\Debug\libgovarnam.lib"
 popd
 
 pushd $scriptDir/../rust

@@ -30,17 +30,17 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
 Source: "govarnam\windows-build.bat"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\lib\libgovarnam.dll"; DestDir: "C:\lib"; Flags: ignoreversion
-Source: "C:\lib\libgovarnam.lib"; DestDir: "C:\lib"; Flags: ignoreversion
+Source: "cpp\x64\Debug\libgovarnam.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "cpp\x64\Debug\libgovarnam.lib"; DestDir: "{app}"; Flags: ignoreversion
 Source: "cpp\x64\Debug\Varnam Windows.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "cpp\x64\Debug\Varnam Windows.exp"; DestDir: "{app}"; Flags: ignoreversion
 Source: "cpp\x64\Debug\Varnam Windows.lib"; DestDir: "{app}"; Flags: ignoreversion
 Source: "cpp\x64\Debug\Varnam Windows.pdb"; DestDir: "{app}"; Flags: ignoreversion
 
 [Run]
-Filename: "{app}\windows-build.bat"; Parameters: ""; Flags: runhidden; StatusMsg: "Updating Govarnam schemes..."
+Filename: "{app}\windows-build.bat"; Parameters: ""; Flags: runhidden; StatusMsg: "Updating Varnam schemes..."
 ; Register the DLL
-Filename: "{sys}\regsvr32.exe"; Parameters: """{app}\Govarnam Windows.dll"""; Flags: runhidden; StatusMsg: "Registering Govarnam Windows DLL..."
+Filename: "{sys}\regsvr32.exe"; Parameters: """{app}\Varnam Windows.dll"""; Flags: runhidden; StatusMsg: "Registering Varnam IME Windows DLL..."
 
 [Code]
 procedure AddToPath(NewPath: String);
