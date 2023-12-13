@@ -164,41 +164,41 @@ impl CompositionProcessorEngine {
 
         // let results: Vec<&str> = Vec::from(["stuff", "stuff", "stuff", "stuff"]);
 
-        let current_language = self.language_bar.get_active_langid();
+        // let current_language = self.language_bar.get_active_langid();
 
-        if let Ok(lang_id) = current_language {
-            use std::io::prelude::*;
+        // if let Ok(lang_id) = current_language {
+        //     use std::io::prelude::*;
             
-            let mut file = std::fs::OpenOptions::new()
-                .write(true)
-                .append(true)
-                .open("C:\\Users\\doxop\\Documents\\debug.txt")
-                .unwrap();
+        //     let mut file = std::fs::OpenOptions::new()
+        //         .write(true)
+        //         .append(true)
+        //         .open("C:\\Users\\doxop\\Documents\\debug.txt")
+        //         .unwrap();
 
-            if let Err(e) = writeln!(file, "Language ID: {}", lang_id) {
-                eprintln!("Couldn't write to file: {}", e);
-                let mut error_file = std::fs::OpenOptions::new()
-                    .write(true)
-                    .append(true)
-                    .open("C:\\Users\\doxop\\Documents\\debug.txt")
-                    .unwrap();
-                if let Err(e) = writeln!(error_file, "Error: {}", e) {
-                    eprintln!("Couldn't write error to file: {}", e);
-                }
-            }
-        } else {
-            use std::io::prelude::*;
+        //     if let Err(e) = writeln!(file, "Language ID: {}", lang_id) {
+        //         eprintln!("Couldn't write to file: {}", e);
+        //         let mut error_file = std::fs::OpenOptions::new()
+        //             .write(true)
+        //             .append(true)
+        //             .open("C:\\Users\\doxop\\Documents\\debug.txt")
+        //             .unwrap();
+        //         if let Err(e) = writeln!(error_file, "Error: {}", e) {
+        //             eprintln!("Couldn't write error to file: {}", e);
+        //         }
+        //     }
+        // } else {
+        //     use std::io::prelude::*;
             
-            let mut file = std::fs::OpenOptions::new()
-                .write(true)
-                .append(true)
-                .open("C:\\Users\\doxop\\Documents\\debug.txt")
-                .unwrap();
+        //     let mut file = std::fs::OpenOptions::new()
+        //         .write(true)
+        //         .append(true)
+        //         .open("C:\\Users\\doxop\\Documents\\debug.txt")
+        //         .unwrap();
 
-            if let Err(e) = writeln!(file, "Error: Failed to get active language ID") {
-                eprintln!("Couldn't write error to file: {}", e);
-            }
-        }
+        //     if let Err(e) = writeln!(file, "Error: Failed to get active language ID") {
+        //         eprintln!("Couldn't write error to file: {}", e);
+        //     }
+        // }
 
         for result in results {
             matches.push((keystroke_buffer.clone(), result.to_string()))
