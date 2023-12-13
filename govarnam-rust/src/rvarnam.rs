@@ -47,25 +47,33 @@ impl Varnam {
         let vst_file = vst_file.as_ref().to_string_lossy().to_string();
         let learning_file = learning_file.as_ref().to_string_lossy().to_string();
         unsafe {
-            let _init_id = varnam_init(
+            let init_id = varnam_init(
                 vst_file.as_ptr() as *const i8,
                 learning_file.as_ptr() as *const i8,
                 &id,
             );
+
+            while init_id != std::ptr::null() {
+                return Self::init(vst_file, learning_file);
+            }
         };
-        // TODO: check error use init_id
+
         Ok(Varnam { handle_id: id })
     }
 
     pub fn transliterate<T: AsRef<str>>(&self, word: T) -> Vec<Suggestion_t> {
         let id: c_int = 1;
-        let word = CString::new(word.as_ref()).unwrap();
+        let c_word = CString::new(word.as_ref()).unwrap();
         let mut varray_ptr = varray_t::init();
-        unsafe { varnam_transliterate(self.handle_id, id, word.as_ptr(), &mut varray_ptr) };
+        let trans_id = unsafe { varnam_transliterate(self.handle_id, id, c_word.as_ptr(), &mut varray_ptr) };
+        while trans_id != std::ptr::null() {
+            return self.transliterate(word);
+        }
         let varray_pointer = unsafe { *varray_ptr as varray_t };
         varray_pointer.into()
     }
 }
+
 
 impl Drop for Varnam {
     fn drop(&mut self) {

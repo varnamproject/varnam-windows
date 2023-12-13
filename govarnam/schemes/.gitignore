@@ -1,0 +1,6 @@
+libvarnam*
+*.vst*
+*.so
+*.zip
+*.vlf
+install.sh

@@ -1,0 +1,43 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  publish:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          lfs: true
+          submodules: recursive
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.16
+
+      - name: Make GoVarnam
+        run: |
+          git clone https://github.com/varnamproject/govarnam.git govarnam
+          cd govarnam
+          make
+          sudo make install
+
+      - name: Dependencies
+        run: |
+          sudo apt install ruby-ffi
+
+      - name: Make Schemes
+        run: |
+          ./build_all_schemes.sh
+      
+      - name: Run Tests
+        run: |
+          ruby test/run.rb

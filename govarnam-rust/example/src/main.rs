@@ -19,22 +19,24 @@ static VARNAM: Lazy<Varnam> = Lazy::new(|| {
 });
 
 fn main() {
-    let mut matches: Vec<(String, String)> = Vec::with_capacity(20);
+    // for _ in 0..50 {
+        let mut matches: Vec<(String, String)> = Vec::with_capacity(20);
 
-    let results = VARNAM.transliterate("namaskkaaram");
+        let results = VARNAM.transliterate("namaskkaaram");
 
-    // for item in results {
-    //     println!(
-    //         "Word: {}, Weight: {}, Learned on: {}",
-    //         item.to_string(),
-    //         item.weight,
-    //         item.learned_on,
-    //     );
+        // for item in results {
+        //     println!(
+        //         "Word: {}, Weight: {}, Learned on: {}",
+        //         item.to_string(),
+        //         item.weight,
+        //         item.learned_on,
+        //     );
+        // }
+
+        for result in results {
+            matches.push(("input".into(), result.to_string()))
+        }
+
+        eprintln!("{:?}", matches);
     // }
-
-    for result in results {
-        matches.push(("input".into(), result.to_string()))
-    }
-
-    eprintln!("{:?}", matches);
 }

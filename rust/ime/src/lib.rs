@@ -1,4 +1,4 @@
-mod com;
+pub mod com;
 pub mod dll;
 pub mod font;
 pub mod icon;

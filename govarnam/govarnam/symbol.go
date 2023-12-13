@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"unicode"
 
 	"github.com/mattn/go-sqlite3"
 )
@@ -40,16 +41,18 @@ type Token struct {
 	character string // Non language character
 }
 
+var sqlite3WithLimitDriverRegistered bool
 var sqlite3Conn *sqlite3.SQLiteConn
 
 func openDB(path string) (*sql.DB, error) {
-	if sqlite3Conn == nil {
+	if !sqlite3WithLimitDriverRegistered {
 		sql.Register("sqlite3_with_limit", &sqlite3.SQLiteDriver{
 			ConnectHook: func(conn *sqlite3.SQLiteConn) error {
 				sqlite3Conn = conn
 				return nil
 			},
 		})
+		sqlite3WithLimitDriverRegistered = true
 	}
 
 	conn, err := sql.Open("sqlite3_with_limit", path)
@@ -274,10 +277,17 @@ func (varnam *Varnam) tokenizeWord(ctx context.Context, word string, matchType i
 			matches := varnam.findLongestPatternMatchSymbols(ctx, sequence, matchType, acceptCondition)
 
 			if len(matches) == 0 {
-				// No matches, add a character token
-				// Note that we just add 1 character, and move on
-				token := Token{VARNAM_TOKEN_CHAR, matches, i, string(sequence[:1])}
-				results = append(results, token)
+				if unicode.In(sequence[0], &varnam.LangRules.UnicodeBlock) {
+					// This helps to get suggestions in inputs like "ആലppu"
+					character := string(sequence[0])
+					token := Token{VARNAM_TOKEN_SYMBOL, []Symbol{{Value1: character}}, i, character}
+					results = append(results, token)
+				} else {
+					// No matches, add a character token
+					// Note that we just add 1 character, and move on
+					token := Token{VARNAM_TOKEN_CHAR, matches, i, string(sequence[:1])}
+					results = append(results, token)
+				}
 
 				i++
 			} else {

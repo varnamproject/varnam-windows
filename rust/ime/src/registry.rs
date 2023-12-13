@@ -6,7 +6,6 @@ use crate::com::create_instance_inproc;
 use windows::Win32::{
     Foundation::{HMODULE, MAX_PATH},
     System::LibraryLoader::GetModuleFileNameW,
-    System::SystemServices::{LANG_MALAYALAM, SUBLANG_MALAYALAM_INDIA},
     UI::TextServices::{
         CLSID_TF_CategoryMgr, CLSID_TF_InputProcessorProfiles, ITfCategoryMgr,
         ITfInputProcessorProfileMgr, GUID_TFCAT_DISPLAYATTRIBUTEPROVIDER,
@@ -18,10 +17,7 @@ use windows::Win32::{
 };
 
 const TEXTSERVICE_DESC: &str = "Varnam Windows";
-// MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED)
-// const TEXTSERVICE_LANGID: u16 = (SUBLANG_CHINESE_SIMPLIFIED << 10 | LANG_CHINESE) as u16;
-const TEXTSERVICE_LANGID: u16 = (SUBLANG_MALAYALAM_INDIA << 10 | LANG_MALAYALAM) as u16;
-// #define TEXTSERVICE_ICON_INDEX   -IDIS_SAMPLEIME
+
 const TEXTSERVICE_ICON_INDEX: u32 = -12i32 as u32;
 
 fn get_module_file_name(dll_instance_handle: HMODULE) -> String {
@@ -32,7 +28,7 @@ fn get_module_file_name(dll_instance_handle: HMODULE) -> String {
     }
 }
 
-pub fn register_profile(dll_instance_handle: HMODULE) -> windows::core::Result<()> {
+pub fn register_profile(dll_instance_handle: HMODULE, testservice_langid: u16) -> windows::core::Result<()> {
     let profile_manager: ITfInputProcessorProfileMgr =
         create_instance_inproc(&CLSID_TF_InputProcessorProfiles)?;
 
@@ -45,7 +41,7 @@ pub fn register_profile(dll_instance_handle: HMODULE) -> windows::core::Result<(
     unsafe {
         profile_manager.RegisterProfile(
             &SAMPLEIME_CLSID,
-            TEXTSERVICE_LANGID,
+            testservice_langid,
             &SAMPLEIME_GUID_PROFILE,
             &description,
             &icon_file_name,
@@ -60,14 +56,14 @@ pub fn register_profile(dll_instance_handle: HMODULE) -> windows::core::Result<(
     Ok(())
 }
 
-pub fn unregister_profile() -> Result<(), windows::core::Error> {
+pub fn unregister_profile(testservice_langid: u16) -> Result<(), windows::core::Error> {
     let profile_manager: ITfInputProcessorProfileMgr =
         create_instance_inproc(&CLSID_TF_InputProcessorProfiles)?;
 
     unsafe {
         profile_manager.UnregisterProfile(
             &SAMPLEIME_CLSID,
-            TEXTSERVICE_LANGID,
+            testservice_langid,
             &SAMPLEIME_GUID_PROFILE,
             0,
         )?;

@@ -13,6 +13,21 @@ use windows::{
             Input::KeyboardAndMouse::VK_SHIFT,
             TextServices::{ITfThreadMgr, TF_LBI_STATUS_DISABLED, TF_LBI_STATUS_HIDDEN},
         },
+        // System::SystemServices::{
+        //     LANG_MALAYALAM,
+        //     LANG_ASSAMESE,
+        //     LANG_MARATHI,
+        //     LANG_BENGALI,
+        //     LANG_NEPALI,
+        //     LANG_GUJARATI,
+        //     LANG_ODIA,
+        //     LANG_HINDI,
+        //     LANG_PUNJABI,
+        //     LANG_KANNADA,
+        //     LANG_SANSKRIT,
+        //     LANG_TAMIL,
+        //     LANG_TELUGU,
+        // },
     },
 };
 
@@ -39,9 +54,6 @@ use once_cell::sync::Lazy;
 use govarnam::Varnam;
 
 static VARNAM: Lazy<Varnam> = Lazy::new(|| {
-    // DEBUG
-    // This should be adaptive to language switches
-    // Currently using Malayalam VST for debugging
     let dll_instance_handle = unsafe { ime::dll::DLL_INSTANCE };
 
     let file_name = unsafe {
@@ -51,6 +63,23 @@ static VARNAM: Lazy<Varnam> = Lazy::new(|| {
     };
 
     let dir = std::path::Path::new(&file_name[..]).parent().unwrap();
+
+    // let (scheme_path, learning_path) = match active_langid as u32 {
+    //     LANG_MALAYALAM => (dir.join("schemes/ml/ml.vst"), dir.join("schemes/learnings/ml.vst.learnings")), // Malayalam
+    //     LANG_ASSAMESE => (dir.join("schemes/as/as.vst"), dir.join("schemes/learnings/as.vst.learnings")), // Assamese
+    //     LANG_MARATHI => (dir.join("schemes/mr/mr.vst"), dir.join("schemes/learnings/mr.vst.learnings")), // Marathi
+    //     LANG_BENGALI => (dir.join("schemes/bn/bn.vst"), dir.join("schemes/learnings/bn.vst.learnings")), // Bengali
+    //     LANG_NEPALI => (dir.join("schemes/ne/ne.vst"), dir.join("schemes/learnings/ne.vst.learnings")), // Nepali
+    //     LANG_GUJARATI => (dir.join("schemes/gu/gu.vst"), dir.join("schemes/learnings/gu.vst.learnings")), // Gujarati
+    //     LANG_ODIA => (dir.join("schemes/or/or.vst"), dir.join("schemes/learnings/or.vst.learnings")), // Odia
+    //     LANG_HINDI => (dir.join("schemes/hi/hi.vst"), dir.join("schemes/learnings/hi.vst.learnings")), // Hindi
+    //     LANG_PUNJABI => (dir.join("schemes/pa/pa.vst"), dir.join("schemes/learnings/pa.vst.learnings")), // Punjabi
+    //     LANG_KANNADA => (dir.join("schemes/kn/kn.vst"), dir.join("schemes/learnings/kn.vst.learnings")), // Kannada
+    //     LANG_SANSKRIT => (dir.join("schemes/sa/sa.vst"), dir.join("schemes/learnings/sa.vst.learnings")), // Sanskrit
+    //     LANG_TAMIL => (dir.join("schemes/ta/ta.vst"), dir.join("schemes/learnings/ta.vst.learnings")), // Tamil
+    //     LANG_TELUGU => (dir.join("schemes/te/te.vst"), dir.join("schemes/learnings/te.vst.learnings")), // Telugu
+    //     _ => panic!("Unsupported language ID: {}", active_langid), // Panic for unsupported languages
+    // };
 
     let scheme_path =  dir.join("schemes/ml/ml.vst");
     let learning_path = dir.join("schemes/learnings/ml.vst.learnings");
@@ -109,10 +138,6 @@ impl CompositionProcessorEngine {
             .init(thread_mgr, client_id, &self.compartment_wrapper)
             .ok();
         unsafe { ime::font::set_default_candidate_text_font() };
-        // self.setup_dictionary_file(
-        //     unsafe { ime::dll::DLL_INSTANCE },
-        //     ime::resources::TEXTSERVICE_DIC,
-        // );
 
         true
     }
@@ -138,6 +163,42 @@ impl CompositionProcessorEngine {
         let results = VARNAM.transliterate(keystroke_buffer.to_owned());
 
         // let results: Vec<&str> = Vec::from(["stuff", "stuff", "stuff", "stuff"]);
+
+        let current_language = self.language_bar.get_active_langid();
+
+        if let Ok(lang_id) = current_language {
+            use std::io::prelude::*;
+            
+            let mut file = std::fs::OpenOptions::new()
+                .write(true)
+                .append(true)
+                .open("C:\\Users\\doxop\\Documents\\debug.txt")
+                .unwrap();
+
+            if let Err(e) = writeln!(file, "Language ID: {}", lang_id) {
+                eprintln!("Couldn't write to file: {}", e);
+                let mut error_file = std::fs::OpenOptions::new()
+                    .write(true)
+                    .append(true)
+                    .open("C:\\Users\\doxop\\Documents\\debug.txt")
+                    .unwrap();
+                if let Err(e) = writeln!(error_file, "Error: {}", e) {
+                    eprintln!("Couldn't write error to file: {}", e);
+                }
+            }
+        } else {
+            use std::io::prelude::*;
+            
+            let mut file = std::fs::OpenOptions::new()
+                .write(true)
+                .append(true)
+                .open("C:\\Users\\doxop\\Documents\\debug.txt")
+                .unwrap();
+
+            if let Err(e) = writeln!(file, "Error: Failed to get active language ID") {
+                eprintln!("Couldn't write error to file: {}", e);
+            }
+        }
 
         for result in results {
             matches.push((keystroke_buffer.clone(), result.to_string()))

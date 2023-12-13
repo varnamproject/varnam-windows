@@ -22,15 +22,11 @@ CURDIR := $(shell pwd)
 ifeq ($(UNAME), Darwin)
   SED := sed -i ""
   LIB_NAME = libgovarnam.dylib
-else ifeq ($(UNAME), Windows_NT)
-  INSTALL_DIR = "C:\\lib"
-  LIB_NAME = libgovarnam.dll
 else
   EXT_LDFLAGS = -extldflags "-Wl,-soname,$(LIB_NAME).$(SO_NAME),--version-script,$(CURDIR)/govarnam.syms"
 endif
 
 VERSION_STAMP_LDFLAGS := -X 'github.com/varnamproject/govarnam/govarnam.BuildString=${BUILDSTR}' -X 'github.com/varnamproject/govarnam/govarnam.VersionString=${VERSION}' $(EXT_LDFLAGS)
-
 pc:
 	cp govarnam.pc.in govarnam.pc
 	${SED} "s#@INSTALL_PREFIX@#${INSTALL_PREFIX}#g" govarnam.pc
@@ -71,20 +67,8 @@ library-nosqlite:
 	CGO_ENABLED=1 go build -tags "fts5,libsqlite3" -buildmode=c-shared -ldflags "-s -w ${VERSION_STAMP_LDFLAGS}" -o ${LIB_NAME} .
 
 library:
-	ifeq ($(UNAME), Windows_NT)
-		CGO_CFLAGS=-Dvarnam_EXPORTS CGO_ENABLED=1 go build -tags "fts5" -buildmode=c-shared -ldflags "-s -w ${VERSION_STAMP_LDFLAGS}" -o ${LIB_NAME} .
-		if not exist "${INSTALL_DIR}" (
-			mkdir "${INSTALL_DIR}"
-		)
-		copy ${LIB_NAME} "${INSTALL_DIR}"
-		echo %PATH% | findstr /C:"${INSTALL_DIR}" > nul
-		if errorlevel 1 (
-			setx PATH "%PATH%;${INSTALL_DIR}"
-		)
-	else
-		CGO_ENABLED=1 go build -tags "fts5" -buildmode=c-shared -ldflags "-s -w ${VERSION_STAMP_LDFLAGS}" -o ${LIB_NAME} .
-		ln -sf "$(realpath ./)/libgovarnam.so" "$(realpath ./)/libgovarnam.so.${SO_NAME}"
-	endif
+	CGO_ENABLED=1 go build -tags "fts5" -buildmode=c-shared -ldflags "-s -w ${VERSION_STAMP_LDFLAGS}" -o ${LIB_NAME} .
+	ln -sf "$(realpath ./)/libgovarnam.so" "$(realpath ./)/libgovarnam.so.${SO_NAME}"
 
 library-mac-universal:
 	GOOS=darwin GOARCH=arm64 $(MAKE) library

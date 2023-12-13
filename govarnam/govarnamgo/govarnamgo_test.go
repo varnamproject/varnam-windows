@@ -32,7 +32,7 @@ func assertEqual(t *testing.T, a interface{}, b interface{}) {
 }
 
 func setUp(schemeID string) {
-	varnam, err := VarnamInitFromID(schemeID)
+	varnam, err := InitFromID(schemeID)
 	checkError(err)
 
 	mutex.Lock()
@@ -67,7 +67,7 @@ func tearDown() {
 
 func TestMain(m *testing.M) {
 	var err error
-	testTempDir, err = os.TempDir("", "govarnam_test")
+	testTempDir, err = os.MkdirTemp("", "govarnamgo_test")
 	checkError(err)
 
 	setUp("ml")
