@@ -2,3 +2,4 @@
 /Cargo.lock
 *.vst
 *.vst.learnings
+windows-langinput/target
