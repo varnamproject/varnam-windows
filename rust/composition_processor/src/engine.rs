@@ -4,6 +4,7 @@ use itf_components::compartment::Compartment;
 use crate::test_virtual_key::{
     test_virtual_key, CandidateMode, KeystrokeCategory, KeystrokeFunction,
 };
+
 use windows::{
     core::{AsImpl, GUID},
     Win32::{
@@ -12,23 +13,26 @@ use windows::{
         UI::{
             Input::KeyboardAndMouse::VK_SHIFT,
             TextServices::{ITfThreadMgr, TF_LBI_STATUS_DISABLED, TF_LBI_STATUS_HIDDEN},
-        },
-        // System::SystemServices::{
-        //     LANG_MALAYALAM,
-        //     LANG_ASSAMESE,
-        //     LANG_MARATHI,
-        //     LANG_BENGALI,
-        //     LANG_NEPALI,
-        //     LANG_GUJARATI,
-        //     LANG_ODIA,
-        //     LANG_HINDI,
-        //     LANG_PUNJABI,
-        //     LANG_KANNADA,
-        //     LANG_SANSKRIT,
-        //     LANG_TAMIL,
-        //     LANG_TELUGU,
-        // },
+        }
     },
+};
+
+use windows::Win32::System::Com::{CoInitializeEx, COINIT_APARTMENTTHREADED};
+
+use windows::Win32::System::SystemServices::{
+    LANG_MALAYALAM, SUBLANG_MALAYALAM_INDIA,
+    LANG_ASSAMESE, SUBLANG_ASSAMESE_INDIA,
+    LANG_MARATHI, SUBLANG_MARATHI_INDIA,
+    LANG_BENGALI, SUBLANG_BENGALI_INDIA,
+    LANG_NEPALI, SUBLANG_NEPALI_INDIA,
+    LANG_GUJARATI, SUBLANG_GUJARATI_INDIA,
+    LANG_ODIA, SUBLANG_ODIA_INDIA,
+    LANG_HINDI, SUBLANG_HINDI_INDIA,
+    LANG_PUNJABI, SUBLANG_PUNJABI_INDIA,
+    LANG_KANNADA, SUBLANG_KANNADA_INDIA,
+    LANG_SANSKRIT, SUBLANG_SANSKRIT_INDIA,
+    LANG_TAMIL, SUBLANG_TAMIL_INDIA,
+    LANG_TELUGU, SUBLANG_TELUGU_INDIA,
 };
 
 pub mod keystroke_buffer;
@@ -53,6 +57,26 @@ use once_cell::sync::Lazy;
 
 use govarnam::Varnam;
 
+use std::collections::HashMap;
+
+static LANG_MAP: Lazy<HashMap<u16, u32>> = Lazy::new(|| {
+    let mut m = HashMap::new();
+    m.insert((SUBLANG_MALAYALAM_INDIA << 10 | LANG_MALAYALAM) as u16, LANG_MALAYALAM);
+    m.insert((SUBLANG_ASSAMESE_INDIA << 10 | LANG_ASSAMESE) as u16, LANG_ASSAMESE);
+    m.insert((SUBLANG_MARATHI_INDIA << 10 | LANG_MARATHI) as u16, LANG_MARATHI);
+    m.insert((SUBLANG_BENGALI_INDIA << 10 | LANG_BENGALI) as u16, LANG_BENGALI);
+    m.insert((SUBLANG_NEPALI_INDIA << 10 | LANG_NEPALI) as u16, LANG_NEPALI);
+    m.insert((SUBLANG_GUJARATI_INDIA << 10 | LANG_GUJARATI) as u16, LANG_GUJARATI);
+    m.insert((SUBLANG_ODIA_INDIA << 10 | LANG_ODIA) as u16, LANG_ODIA);
+    m.insert((SUBLANG_HINDI_INDIA << 10 | LANG_HINDI) as u16, LANG_HINDI);
+    m.insert((SUBLANG_PUNJABI_INDIA << 10 | LANG_PUNJABI) as u16, LANG_PUNJABI);
+    m.insert((SUBLANG_KANNADA_INDIA << 10 | LANG_KANNADA) as u16, LANG_KANNADA);
+    m.insert((SUBLANG_SANSKRIT_INDIA << 10 | LANG_SANSKRIT) as u16, LANG_SANSKRIT);
+    m.insert((SUBLANG_TAMIL_INDIA << 10 | LANG_TAMIL) as u16, LANG_TAMIL);
+    m.insert((SUBLANG_TELUGU_INDIA << 10 | LANG_TELUGU) as u16, LANG_TELUGU);
+    m
+});
+
 static VARNAM: Lazy<Varnam> = Lazy::new(|| {
     let dll_instance_handle = unsafe { ime::dll::DLL_INSTANCE };
 
@@ -64,25 +88,32 @@ static VARNAM: Lazy<Varnam> = Lazy::new(|| {
 
     let dir = std::path::Path::new(&file_name[..]).parent().unwrap();
 
-    // let (scheme_path, learning_path) = match active_langid as u32 {
-    //     LANG_MALAYALAM => (dir.join("schemes/ml/ml.vst"), dir.join("schemes/learnings/ml.vst.learnings")), // Malayalam
-    //     LANG_ASSAMESE => (dir.join("schemes/as/as.vst"), dir.join("schemes/learnings/as.vst.learnings")), // Assamese
-    //     LANG_MARATHI => (dir.join("schemes/mr/mr.vst"), dir.join("schemes/learnings/mr.vst.learnings")), // Marathi
-    //     LANG_BENGALI => (dir.join("schemes/bn/bn.vst"), dir.join("schemes/learnings/bn.vst.learnings")), // Bengali
-    //     LANG_NEPALI => (dir.join("schemes/ne/ne.vst"), dir.join("schemes/learnings/ne.vst.learnings")), // Nepali
-    //     LANG_GUJARATI => (dir.join("schemes/gu/gu.vst"), dir.join("schemes/learnings/gu.vst.learnings")), // Gujarati
-    //     LANG_ODIA => (dir.join("schemes/or/or.vst"), dir.join("schemes/learnings/or.vst.learnings")), // Odia
-    //     LANG_HINDI => (dir.join("schemes/hi/hi.vst"), dir.join("schemes/learnings/hi.vst.learnings")), // Hindi
-    //     LANG_PUNJABI => (dir.join("schemes/pa/pa.vst"), dir.join("schemes/learnings/pa.vst.learnings")), // Punjabi
-    //     LANG_KANNADA => (dir.join("schemes/kn/kn.vst"), dir.join("schemes/learnings/kn.vst.learnings")), // Kannada
-    //     LANG_SANSKRIT => (dir.join("schemes/sa/sa.vst"), dir.join("schemes/learnings/sa.vst.learnings")), // Sanskrit
-    //     LANG_TAMIL => (dir.join("schemes/ta/ta.vst"), dir.join("schemes/learnings/ta.vst.learnings")), // Tamil
-    //     LANG_TELUGU => (dir.join("schemes/te/te.vst"), dir.join("schemes/learnings/te.vst.learnings")), // Telugu
-    //     _ => panic!("Unsupported language ID: {}", active_langid), // Panic for unsupported languages
-    // };
+    unsafe {
+        CoInitializeEx(None, COINIT_APARTMENTTHREADED).expect("Failed to initialize COM");
+    }
 
-    let scheme_path =  dir.join("schemes/ml/ml.vst");
-    let learning_path = dir.join("schemes/learnings/ml.vst.learnings");
+    let active_lang_profile = LanguageBar::get_active_langid().unwrap();
+    let active_langid = LANG_MAP.get(&active_lang_profile).unwrap();
+
+    let (scheme_path, learning_path) = match active_langid {
+        &LANG_MALAYALAM => (dir.join("schemes/ml/ml.vst"), dir.join("schemes/learnings/ml.vst.learnings")), // Malayalam
+        &LANG_ASSAMESE => (dir.join("schemes/as/as.vst"), dir.join("schemes/learnings/as.vst.learnings")), // Assamese
+        &LANG_MARATHI => (dir.join("schemes/mr/mr.vst"), dir.join("schemes/learnings/mr.vst.learnings")), // Marathi
+        &LANG_BENGALI => (dir.join("schemes/bn/bn.vst"), dir.join("schemes/learnings/bn.vst.learnings")), // Bengali
+        &LANG_NEPALI => (dir.join("schemes/ne/ne.vst"), dir.join("schemes/learnings/ne.vst.learnings")), // Nepali
+        &LANG_GUJARATI => (dir.join("schemes/gu/gu.vst"), dir.join("schemes/learnings/gu.vst.learnings")), // Gujarati
+        &LANG_ODIA => (dir.join("schemes/or/or.vst"), dir.join("schemes/learnings/or.vst.learnings")), // Odia
+        &LANG_HINDI => (dir.join("schemes/hi/hi.vst"), dir.join("schemes/learnings/hi.vst.learnings")), // Hindi
+        &LANG_PUNJABI => (dir.join("schemes/pa/pa.vst"), dir.join("schemes/learnings/pa.vst.learnings")), // Punjabi
+        &LANG_KANNADA => (dir.join("schemes/kn/kn.vst"), dir.join("schemes/learnings/kn.vst.learnings")), // Kannada
+        &LANG_SANSKRIT => (dir.join("schemes/sa/sa.vst"), dir.join("schemes/learnings/sa.vst.learnings")), // Sanskrit
+        &LANG_TAMIL => (dir.join("schemes/ta/ta.vst"), dir.join("schemes/learnings/ta.vst.learnings")), // Tamil
+        &LANG_TELUGU => (dir.join("schemes/te/te.vst"), dir.join("schemes/learnings/te.vst.learnings")), // Telugu
+        _ => panic!("Unsupported language ID: {}", active_langid), // Panic for unsupported languages
+    };
+
+    // let scheme_path =  dir.join("schemes/ml/ml.vst");
+    // let learning_path = dir.join("schemes/learnings/ml.vst.learnings");
 
     match Varnam::init(
         scheme_path,
@@ -161,44 +192,6 @@ impl CompositionProcessorEngine {
         let keystroke_buffer = self.keystroke_buffer.get_reading_string();
 
         let results = VARNAM.transliterate(keystroke_buffer.to_owned());
-
-        // let results: Vec<&str> = Vec::from(["stuff", "stuff", "stuff", "stuff"]);
-
-        // let current_language = self.language_bar.get_active_langid();
-
-        // if let Ok(lang_id) = current_language {
-        //     use std::io::prelude::*;
-            
-        //     let mut file = std::fs::OpenOptions::new()
-        //         .write(true)
-        //         .append(true)
-        //         .open("C:\\Users\\doxop\\Documents\\debug.txt")
-        //         .unwrap();
-
-        //     if let Err(e) = writeln!(file, "Language ID: {}", lang_id) {
-        //         eprintln!("Couldn't write to file: {}", e);
-        //         let mut error_file = std::fs::OpenOptions::new()
-        //             .write(true)
-        //             .append(true)
-        //             .open("C:\\Users\\doxop\\Documents\\debug.txt")
-        //             .unwrap();
-        //         if let Err(e) = writeln!(error_file, "Error: {}", e) {
-        //             eprintln!("Couldn't write error to file: {}", e);
-        //         }
-        //     }
-        // } else {
-        //     use std::io::prelude::*;
-            
-        //     let mut file = std::fs::OpenOptions::new()
-        //         .write(true)
-        //         .append(true)
-        //         .open("C:\\Users\\doxop\\Documents\\debug.txt")
-        //         .unwrap();
-
-        //     if let Err(e) = writeln!(file, "Error: Failed to get active language ID") {
-        //         eprintln!("Couldn't write error to file: {}", e);
-        //     }
-        // }
 
         for result in results {
             matches.push((keystroke_buffer.clone(), result.to_string()))

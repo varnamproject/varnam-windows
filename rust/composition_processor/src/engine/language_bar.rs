@@ -1,7 +1,7 @@
 use std::ffi::c_void;
 
 use globals::{
-    SAMPLEIME_GUID_PROFILE, SAMPLEIME_GUID_COMPARTMENT_DOUBLE_SINGLE_BYTE, SAMPLEIME_GUID_COMPARTMENT_PUNCTUATION,
+    SAMPLEIME_GUID_COMPARTMENT_DOUBLE_SINGLE_BYTE, SAMPLEIME_GUID_COMPARTMENT_PUNCTUATION,
 };
 use ime::resources::{
     IME_MODE_DESCRIPTION, IME_MODE_OFF_ICO_INDEX, IME_MODE_ON_ICO_INDEX,
@@ -15,7 +15,7 @@ use windows::{
     Win32::UI::TextServices::{
         ITfCompartmentEventSink, ITfLangBarItemButton, ITfThreadMgr, ITfInputProcessorProfileMgr, TF_INPUTPROCESSORPROFILE,
         GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION, GUID_COMPARTMENT_KEYBOARD_OPENCLOSE,
-        GUID_LBI_INPUTMODE, CLSID_TF_InputProcessorProfiles
+        GUID_LBI_INPUTMODE, GUID_TFCAT_TIP_KEYBOARD, CLSID_TF_InputProcessorProfiles
     },
 };
 use ime::com::create_instance_inproc;
@@ -105,15 +105,15 @@ impl LanguageBar {
         Ok(())
     }
 
-    pub fn get_active_langid(&self) -> windows::core::Result<u16> {
+    pub fn get_active_langid() -> windows::core::Result<u16> {
         let profile_manager: ITfInputProcessorProfileMgr =
             create_instance_inproc(&CLSID_TF_InputProcessorProfiles)?;
-
+    
         let mut profile: TF_INPUTPROCESSORPROFILE = Default::default();
         unsafe {
-            profile_manager.GetActiveProfile(&SAMPLEIME_GUID_PROFILE, &mut profile)?;
+            profile_manager.GetActiveProfile(&GUID_TFCAT_TIP_KEYBOARD, &mut profile)?;
         }
-
+    
         Ok(profile.langid)
     }
 }

@@ -1,0 +1,1 @@
+C:\Users\doxop\Documents\GitHub\varnam-windows\windows-langinput\target\release\windows-langinput.exe: C:\Users\doxop\Documents\GitHub\varnam-windows\rust\globals\src\lib.rs C:\Users\doxop\Documents\GitHub\varnam-windows\windows-langinput\src\main.rs
