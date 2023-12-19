@@ -25,20 +25,29 @@ fn main() {
         });
 
     for vlf_file in vlf_files {
-        // let scheme_id = vlf_file.file_stem()
-        //     .unwrap()
-        //     .to_str()
-        //     .unwrap()
-        //     .to_string();
+        let scheme_id = if vlf_file.file_stem().unwrap().to_str().unwrap().contains("-") {
+            vlf_file.file_stem().unwrap().to_str().unwrap().split("-").next().unwrap().to_string()
+        } else {
+            vlf_file.file_stem().unwrap().to_str().unwrap().to_string()
+        };
 
-        let scheme_id = "ml";
+        println!("Learning for scheme: {}", scheme_id);
 
-        let varnam = Varnam::init_from_id(scheme_id)
-            .unwrap_or_else(|err| panic!("Failed to initialize varnam: {:?}", err));
+        let scheme_path = format!("{}/vst/{}.vst", directory_path, scheme_id);
+        let learning_path = format!("{}/learnings/{}.vst.learnings", directory_path, scheme_id);
+
+        let varnam = match Varnam::init(
+            scheme_path,
+            learning_path
+        ) {
+            Ok(varnam) => varnam,
+            Err(e) => {
+                let msg = format!("Cannot initialize varnam: {:?}", e);
+                panic!("{}", msg);
+            }
+        };
 
         varnam.import(vlf_file.to_str().unwrap())
             .unwrap_or_else(|err| panic!("Failed to import file: {:?}", err));
-
-        println!("Imported: {}", scheme_id);
     }
 }
