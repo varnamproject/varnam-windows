@@ -56,6 +56,7 @@ use language_bar::LanguageBar;
 use once_cell::sync::Lazy;
 
 use govarnam::Varnam;
+use govarnam::bindings::v_array::Suggestion_t as VarnamSuggestions;
 
 use std::collections::HashMap;
 
@@ -75,56 +76,6 @@ static LANG_MAP: Lazy<HashMap<u16, u32>> = Lazy::new(|| {
     m.insert((SUBLANG_TAMIL_INDIA << 10 | LANG_TAMIL) as u16, LANG_TAMIL);
     m.insert((SUBLANG_TELUGU_INDIA << 10 | LANG_TELUGU) as u16, LANG_TELUGU);
     m
-});
-
-static VARNAM: Lazy<Varnam> = Lazy::new(|| {
-    let dll_instance_handle = unsafe { ime::dll::DLL_INSTANCE };
-
-    let file_name = unsafe {
-        let mut file_name = [0u16; MAX_PATH as usize];
-        GetModuleFileNameW(dll_instance_handle, &mut file_name);
-        String::from_utf16(&file_name).unwrap()
-    };
-
-    let dir = std::path::Path::new(&file_name[..]).parent().unwrap();
-
-    unsafe {
-        CoInitializeEx(None, COINIT_APARTMENTTHREADED).expect("Failed to initialize COM");
-    }
-
-    let active_lang_profile = LanguageBar::get_active_langid().unwrap();
-    let active_langid = LANG_MAP.get(&active_lang_profile).unwrap();
-
-    let (scheme_path, learning_path) = match active_langid {
-        &LANG_MALAYALAM => (dir.join("schemes/ml/ml.vst"), dir.join("schemes/learnings/ml.vst.learnings")), // Malayalam
-        &LANG_ASSAMESE => (dir.join("schemes/as/as.vst"), dir.join("schemes/learnings/as.vst.learnings")), // Assamese
-        &LANG_MARATHI => (dir.join("schemes/mr/mr.vst"), dir.join("schemes/learnings/mr.vst.learnings")), // Marathi
-        &LANG_BENGALI => (dir.join("schemes/bn/bn.vst"), dir.join("schemes/learnings/bn.vst.learnings")), // Bengali
-        &LANG_NEPALI => (dir.join("schemes/ne/ne.vst"), dir.join("schemes/learnings/ne.vst.learnings")), // Nepali
-        &LANG_GUJARATI => (dir.join("schemes/gu/gu.vst"), dir.join("schemes/learnings/gu.vst.learnings")), // Gujarati
-        &LANG_ODIA => (dir.join("schemes/or/or.vst"), dir.join("schemes/learnings/or.vst.learnings")), // Odia
-        &LANG_HINDI => (dir.join("schemes/hi/hi.vst"), dir.join("schemes/learnings/hi.vst.learnings")), // Hindi
-        &LANG_PUNJABI => (dir.join("schemes/pa/pa.vst"), dir.join("schemes/learnings/pa.vst.learnings")), // Punjabi
-        &LANG_KANNADA => (dir.join("schemes/kn/kn.vst"), dir.join("schemes/learnings/kn.vst.learnings")), // Kannada
-        &LANG_SANSKRIT => (dir.join("schemes/sa/sa.vst"), dir.join("schemes/learnings/sa.vst.learnings")), // Sanskrit
-        &LANG_TAMIL => (dir.join("schemes/ta/ta.vst"), dir.join("schemes/learnings/ta.vst.learnings")), // Tamil
-        &LANG_TELUGU => (dir.join("schemes/te/te.vst"), dir.join("schemes/learnings/te.vst.learnings")), // Telugu
-        _ => panic!("Unsupported language ID: {}", active_langid), // Panic for unsupported languages
-    };
-
-    // let scheme_path =  dir.join("schemes/ml/ml.vst");
-    // let learning_path = dir.join("schemes/learnings/ml.vst.learnings");
-
-    match Varnam::init(
-        scheme_path,
-        learning_path
-    ) {
-        Ok(varnam) => varnam,
-        Err(e) => {
-            let msg = format!("Cannot initialize varnam: {:?}", e);
-            panic!("{}", msg);
-        }
-    }
 });
 
 pub struct CompositionProcessorEngine {
@@ -183,15 +134,69 @@ impl CompositionProcessorEngine {
         test_virtual_key(self, code, ch, composing, candidate_mode)
     }
 
+    pub fn varnam_transliterate(
+        &self,
+        keystroke_buffer: &String
+    ) -> Vec<VarnamSuggestions> {
+        let dll_instance_handle = unsafe { ime::dll::DLL_INSTANCE };
+
+        let file_name = unsafe {
+            let mut file_name = [0u16; MAX_PATH as usize];
+            GetModuleFileNameW(dll_instance_handle, &mut file_name);
+            String::from_utf16(&file_name).unwrap()
+        };
+
+        let dir = std::path::Path::new(&file_name[..]).parent().unwrap();
+
+        unsafe {
+            CoInitializeEx(None, COINIT_APARTMENTTHREADED).expect("Failed to initialize COM");
+        }
+
+        let active_lang_profile = LanguageBar::get_active_langid().unwrap();
+        let active_langid = LANG_MAP.get(&active_lang_profile).unwrap();
+
+        let (scheme_path, learning_path) = match active_langid {
+            &LANG_MALAYALAM => (dir.join("schemes/ml/ml.vst"), dir.join("schemes/learnings/ml.vst.learnings")),
+            &LANG_ASSAMESE => (dir.join("schemes/as/as.vst"), dir.join("schemes/learnings/as.vst.learnings")),
+            &LANG_MARATHI => (dir.join("schemes/mr/mr.vst"), dir.join("schemes/learnings/mr.vst.learnings")),
+            &LANG_BENGALI => (dir.join("schemes/bn/bn.vst"), dir.join("schemes/learnings/bn.vst.learnings")),
+            &LANG_NEPALI => (dir.join("schemes/ne/ne.vst"), dir.join("schemes/learnings/ne.vst.learnings")),
+            &LANG_GUJARATI => (dir.join("schemes/gu/gu.vst"), dir.join("schemes/learnings/gu.vst.learnings")),
+            &LANG_ODIA => (dir.join("schemes/or/or.vst"), dir.join("schemes/learnings/or.vst.learnings")),
+            &LANG_HINDI => (dir.join("schemes/hi/hi.vst"), dir.join("schemes/learnings/hi.vst.learnings")),
+            &LANG_PUNJABI => (dir.join("schemes/pa/pa.vst"), dir.join("schemes/learnings/pa.vst.learnings")),
+            &LANG_KANNADA => (dir.join("schemes/kn/kn.vst"), dir.join("schemes/learnings/kn.vst.learnings")),
+            &LANG_SANSKRIT => (dir.join("schemes/sa/sa.vst"), dir.join("schemes/learnings/sa.vst.learnings")),
+            &LANG_TAMIL => (dir.join("schemes/ta/ta.vst"), dir.join("schemes/learnings/ta.vst.learnings")),
+            &LANG_TELUGU => (dir.join("schemes/te/te.vst"), dir.join("schemes/learnings/te.vst.learnings")),
+            _ => panic!("Unsupported language ID: {}", active_langid),
+        };
+
+        let varnam = match Varnam::init(
+            scheme_path,
+            learning_path
+        ) {
+            Ok(varnam) => varnam,
+            Err(e) => {
+                let msg = format!("Cannot initialize varnam: {:?}", e);
+                panic!("{}", msg);
+            }
+        };
+
+        let results = varnam.transliterate(keystroke_buffer.to_owned());
+
+        results
+    }
+
     pub fn get_candidate_list(
         &self,
         _is_incremental_word_search: bool,
         _is_wildcard_search: bool,
     ) -> Vec<(String, String)> {
-        let mut matches: Vec<(String, String)> = Vec::with_capacity(20);
+        let mut matches: Vec<(String, String)> = Vec::with_capacity(10);
         let keystroke_buffer = self.keystroke_buffer.get_reading_string();
 
-        let results = VARNAM.transliterate(keystroke_buffer.to_owned());
+        let results = self.varnam_transliterate(&keystroke_buffer);
 
         for result in results {
             matches.push((keystroke_buffer.clone(), result.to_string()))

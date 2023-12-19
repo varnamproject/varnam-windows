@@ -12,8 +12,6 @@ import (
 	"fmt"
 	"io/fs"
 	"log"
-	"os"
-	"path"
 	"time"
 )
 
@@ -57,13 +55,13 @@ type searchDictionaryResult struct {
 func (varnam *Varnam) InitDict(dictPath string) error {
 	var err error
 
-	if !fileExists(dictPath) {
-		log.Printf("Making Varnam Learnings Dir for %s\n", dictPath)
-		err := os.MkdirAll(path.Dir(dictPath), 0750)
-		if err != nil {
-			return err
-		}
-	}
+	// if !fileExists(dictPath) {
+	// 	log.Printf("Making Varnam Learnings Dir for %s\n", dictPath)
+	// 	err := os.MkdirAll(path.Dir(dictPath), 0750)
+	// 	if err != nil {
+	// 		return err
+	// 	}
+	// }
 
 	varnam.dictConn, err = openDB(dictPath)
 	if err != nil {

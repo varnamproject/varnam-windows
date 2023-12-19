@@ -5,12 +5,7 @@ setlocal enabledelayedexpansion
 :: Set the GitHub API URL for the latest release
 set "api_url=https://api.github.com/repos/varnamproject/schemes/releases/latest"
 
-:: Set .libvarnam schemes directory path
-@REM set "govarnam_path=C:\Users\%USERNAME%\.libvarnam"
-
-:: Set .libvarnam\schemes directory path
-@REM set "schemes_path=%govarnam_path%\schemes"
-
+:: Set schemes directory path to current directory
 set "schemes_path=%cd%\schemes"
 
 :: Check for the 'update-schemes' command-line argument
@@ -44,7 +39,7 @@ if "%perform_update%"=="1" (
         "   } " ^
         "}"
     
-    echo Files in '.libvarnam\schemes':
+    echo Files in 'schemes':
     dir "%schemes_path%"
 ) else (
     echo No update required or no argument provided.
@@ -80,7 +75,7 @@ for /f "tokens=1-3 delims=:. " %%a in ('time /t') do set "now=%%a:%%b:%%c"
 SET "BUILDSTR=%VERSION% (#%LAST_COMMIT% %today%T%now%Z)"
 
 SET "LIB_NAME=libgovarnam.dll"
-SET INSTALL_DIR=C:\lib
+SET INSTALL_DIR=%cd%
 
 REM Print all constructed values for debugging
 echo "CGO_CFLAGS: %CGO_CFLAGS%"

@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-globals = { path = "../rust/globals" }
+globals = { path = "../../rust/globals" }
 
 [dependencies.windows]
 version = "0.48.0"

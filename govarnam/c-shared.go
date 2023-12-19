@@ -272,30 +272,35 @@ func varnam_debug(varnamHandleID C.int, val C.int) {
 }
 
 // Deprecated. Use varnam_config()
+//
 //export varnam_set_indic_digits
 func varnam_set_indic_digits(varnamHandleID C.int, val C.int) {
 	varnam_config(varnamHandleID, C.VARNAM_CONFIG_USE_INDIC_DIGITS, val)
 }
 
 // Deprecated. Use varnam_config()
+//
 //export varnam_set_dictionary_suggestions_limit
 func varnam_set_dictionary_suggestions_limit(varnamHandleID C.int, val C.int) {
 	getVarnamHandle(varnamHandleID).varnam.DictionarySuggestionsLimit = int(val)
 }
 
 // Deprecated. Use varnam_config()
+//
 //export varnam_set_pattern_dictionary_suggestions_limit
 func varnam_set_pattern_dictionary_suggestions_limit(varnamHandleID C.int, val C.int) {
 	getVarnamHandle(varnamHandleID).varnam.PatternDictionarySuggestionsLimit = int(val)
 }
 
 // Deprecated. Use varnam_config()
+//
 //export varnam_set_tokenizer_suggestions_limit
 func varnam_set_tokenizer_suggestions_limit(varnamHandleID C.int, val C.int) {
 	getVarnamHandle(varnamHandleID).varnam.TokenizerSuggestionsLimit = int(val)
 }
 
 // Deprecated. Use varnam_config()
+//
 //export varnam_set_dictionary_match_exact
 func varnam_set_dictionary_match_exact(varnamHandleID C.int, val C.int) {
 	if val == 0 {

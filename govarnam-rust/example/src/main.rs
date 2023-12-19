@@ -3,8 +3,8 @@ use once_cell::sync::Lazy;
 use govarnam::Varnam;
 
 static VARNAM: Lazy<Varnam> = Lazy::new(|| {
-    let scheme_path = "C:\\Users\\doxop\\.libvarnam\\schemes\\ml\\ml.vst";
-    let learning_path = "C:\\Users\\doxop\\.libvarnam\\schemes\\learnings\\ml.vst.learnings";
+    let scheme_path = "C:\\Users\\doxop\\Documents\\GitHub\\varnam-windows\\cpp\\x64\\Debug\\schemes\\ml\\ml.vst";
+    let learning_path = "C:\\Users\\doxop\\Documents\\GitHub\\varnam-windows\\cpp\\x64\\Debug\\schemes\\ml\\ml.vst.learnings";
 
     match Varnam::init(
         scheme_path,
@@ -22,7 +22,7 @@ fn main() {
     // for _ in 0..50 {
         let mut matches: Vec<(String, String)> = Vec::with_capacity(20);
 
-        let results = VARNAM.transliterate("namaskkaaram");
+        let results = VARNAM.transliterate("aanavandi");
 
         // for item in results {
         //     println!(
