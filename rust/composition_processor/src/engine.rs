@@ -156,19 +156,19 @@ impl CompositionProcessorEngine {
         let active_langid = LANG_MAP.get(&active_lang_profile).unwrap();
 
         let (scheme_path, learning_path) = match active_langid {
-            &LANG_MALAYALAM => (dir.join("schemes/ml/ml.vst"), dir.join("schemes/learnings/ml.vst.learnings")),
-            &LANG_ASSAMESE => (dir.join("schemes/as/as.vst"), dir.join("schemes/learnings/as.vst.learnings")),
-            &LANG_MARATHI => (dir.join("schemes/mr/mr.vst"), dir.join("schemes/learnings/mr.vst.learnings")),
-            &LANG_BENGALI => (dir.join("schemes/bn/bn.vst"), dir.join("schemes/learnings/bn.vst.learnings")),
-            &LANG_NEPALI => (dir.join("schemes/ne/ne.vst"), dir.join("schemes/learnings/ne.vst.learnings")),
-            &LANG_GUJARATI => (dir.join("schemes/gu/gu.vst"), dir.join("schemes/learnings/gu.vst.learnings")),
-            &LANG_ODIA => (dir.join("schemes/or/or.vst"), dir.join("schemes/learnings/or.vst.learnings")),
-            &LANG_HINDI => (dir.join("schemes/hi/hi.vst"), dir.join("schemes/learnings/hi.vst.learnings")),
-            &LANG_PUNJABI => (dir.join("schemes/pa/pa.vst"), dir.join("schemes/learnings/pa.vst.learnings")),
-            &LANG_KANNADA => (dir.join("schemes/kn/kn.vst"), dir.join("schemes/learnings/kn.vst.learnings")),
-            &LANG_SANSKRIT => (dir.join("schemes/sa/sa.vst"), dir.join("schemes/learnings/sa.vst.learnings")),
-            &LANG_TAMIL => (dir.join("schemes/ta/ta.vst"), dir.join("schemes/learnings/ta.vst.learnings")),
-            &LANG_TELUGU => (dir.join("schemes/te/te.vst"), dir.join("schemes/learnings/te.vst.learnings")),
+            &LANG_MALAYALAM => (dir.join("schemes/ml.vst"), dir.join("schemes/learnings/ml.vst.learnings")),
+            &LANG_ASSAMESE => (dir.join("schemes/as.vst"), dir.join("schemes/learnings/as.vst.learnings")),
+            &LANG_MARATHI => (dir.join("schemes/mr.vst"), dir.join("schemes/learnings/mr.vst.learnings")),
+            &LANG_BENGALI => (dir.join("schemes/bn.vst"), dir.join("schemes/learnings/bn.vst.learnings")),
+            &LANG_NEPALI => (dir.join("schemes/ne.vst"), dir.join("schemes/learnings/ne.vst.learnings")),
+            &LANG_GUJARATI => (dir.join("schemes/gu.vst"), dir.join("schemes/learnings/gu.vst.learnings")),
+            &LANG_ODIA => (dir.join("schemes/or.vst"), dir.join("schemes/learnings/or.vst.learnings")),
+            &LANG_HINDI => (dir.join("schemes/hi.vst"), dir.join("schemes/learnings/hi.vst.learnings")),
+            &LANG_PUNJABI => (dir.join("schemes/pa.vst"), dir.join("schemes/learnings/pa.vst.learnings")),
+            &LANG_KANNADA => (dir.join("schemes/kn.vst"), dir.join("schemes/learnings/kn.vst.learnings")),
+            &LANG_SANSKRIT => (dir.join("schemes/sa.vst"), dir.join("schemes/learnings/sa.vst.learnings")),
+            &LANG_TAMIL => (dir.join("schemes/ta.vst"), dir.join("schemes/learnings/ta.vst.learnings")),
+            &LANG_TELUGU => (dir.join("schemes/te.vst"), dir.join("schemes/learnings/te.vst.learnings")),
             _ => panic!("Unsupported language ID: {}", active_langid),
         };
 

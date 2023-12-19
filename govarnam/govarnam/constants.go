@@ -111,9 +111,9 @@ func FindVSTDir() (string, error) {
 func findVSTPath(schemeID string) (string, error) {
 	for _, dir := range getVSTLookupDirs() {
 		temp := path.Join(dir, schemeID+".vst")
-		if fileExists(temp) {
-			return temp, nil
-		}
+		// if fileExists(temp) {
+		return temp, nil
+		// }
 	}
 	return "", fmt.Errorf("Couldn't find VST for %q", schemeID)
 }

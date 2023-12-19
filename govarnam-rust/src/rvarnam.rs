@@ -61,6 +61,35 @@ impl Varnam {
         Ok(Varnam { handle_id: id })
     }
 
+    pub fn init_from_id<T: AsRef<str>>(scheme_id: T) -> Result<Self, Error> {
+        let id = 22;
+
+        let scheme_id = scheme_id.as_ref().to_string();
+        unsafe {
+            let init_id = varnam_init_from_id(
+                scheme_id.as_ptr() as *const i8,
+                &id,
+            );
+
+            while init_id != std::ptr::null() {
+                return Self::init_from_id(scheme_id);
+            }
+        };
+
+        Ok(Varnam { handle_id: id })
+    }
+
+    pub fn import<T: AsRef<str>>(&self, file_path: T) -> Result<(), Error> {
+        let c_file_path = CString::new(file_path.as_ref()).unwrap();
+        unsafe {
+            let import_id = varnam_import(self.handle_id, c_file_path.as_ptr());
+            if import_id != std::ptr::null() {
+                return self.import(file_path);
+            }
+        };
+        Ok(())
+    }
+
     pub fn transliterate<T: AsRef<str>>(&self, word: T) -> Vec<Suggestion_t> {
         let id: c_int = 1;
         let c_word = CString::new(word.as_ref()).unwrap();

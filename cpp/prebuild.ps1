@@ -10,6 +10,12 @@ Copy-Item "libgovarnam.dll" -Destination "$scriptDir\x64\Debug\libgovarnam.dll"
 Copy-Item "libgovarnam.lib" -Destination "$scriptDir\x64\Debug\libgovarnam.lib"
 Copy-Item -Path "schemes" -Destination "$scriptDir\x64\Debug" -Recurse
 New-Item -ItemType Directory -Path "$scriptDir\x64\Debug\schemes\learnings"
+New-Item -ItemType Directory -Path "$scriptDir\x64\Debug\schemes\vst"
+New-Item -ItemType Directory -Path "$scriptDir\x64\Debug\schemes\vlf"
+Get-ChildItem "$scriptDir\x64\Debug\schemes" -Filter *.vst -Recurse | Copy-Item -Destination "$scriptDir\x64\Debug\schemes\vst"
+Get-ChildItem "$scriptDir\x64\Debug\schemes" -Filter *.vlf -Recurse | Copy-Item -Destination "$scriptDir\x64\Debug\schemes\vlf"
+Get-ChildItem "$scriptDir\x64\Debug\schemes" -Recurse | Where-Object { $_.PSIsContainer -and $_.Name -notmatch '^(vst|learnings|vlf)$' } | Remove-Item -Recurse -Force
+Get-ChildItem "$scriptDir\x64\Debug\schemes" -File | Remove-Item -Force
 Pop-Location
 
 Push-Location $scriptDir/../rust

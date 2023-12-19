@@ -35,6 +35,10 @@ extern void varnam_close(int varnamHandleID);
 
 extern const int *varnam_init(const char *vstFile, const char *learningsFile, const int *id);
 
+extern const int *varnam_init_from_id(const char *schemeID, const int *id);
+
+extern const int *varnam_import(int varnamHandleID, const char *filePath);
+
 extern const int *varnam_transliterate(int varnamHandleID,
                                        int id,
                                        const char *word,

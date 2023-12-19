@@ -7,11 +7,23 @@ extern "C" {
     pub fn varnam_get_build() -> *const c_char;
     pub fn varnam_get_last_error(varnamHandleID: c_int) -> *const c_char;
     pub fn varnam_close(varnamHandleID: c_int);
+
     pub fn varnam_init(
         vstFile: *const c_char,
         learningsFile: *const c_char,
         id: *const c_int,
     ) -> *const c_int;
+
+    pub fn varnam_init_from_id(
+        schemeID: *const c_char,
+        id: *const c_int,
+    ) -> *const c_int;
+
+    pub fn varnam_import(
+        varnamHandleID: c_int,
+        filePath: *const c_char,
+    ) -> *const c_int;    
+
     pub fn varnam_transliterate(
         varnamHandleID: c_int,
         id: c_int,
