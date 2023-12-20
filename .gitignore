@@ -5,4 +5,4 @@ cpp/x64/Debug
 .vscode/
 .vs/
 
-varnam-windows-install.exe
+Output/
