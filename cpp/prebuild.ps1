@@ -37,4 +37,5 @@ cbindgen --crate ime --output ../cpp/SampleIME/cbindgen/ime.h
 cbindgen --crate numberkey_windows --output ../cpp/SampleIME/cbindgen/numberkey_windows.h
 cbindgen --crate ruststringrange --output ../cpp/SampleIME/cbindgen/ruststringrange.h
 cbindgen --crate govarnam --output ../cpp/SampleIME/cbindgen/govarnam.h
+Copy-Item "languages_enabled_config.json" -Destination "$scriptDir\x64\Debug\languages_enabled_config.json"
 Pop-Location

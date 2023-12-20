@@ -58,7 +58,7 @@ use once_cell::sync::Lazy;
 use govarnam::Varnam;
 use govarnam::bindings::v_array::Suggestion_t as VarnamSuggestions;
 
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 static LANG_MAP: Lazy<HashMap<u16, u32>> = Lazy::new(|| {
     let mut m = HashMap::new();
@@ -198,7 +198,7 @@ impl CompositionProcessorEngine {
             }
         };
 
-        let results = varnam.transliterate(keystroke_buffer.to_owned());
+        let results: Vec<VarnamSuggestions> = varnam.transliterate(keystroke_buffer.to_owned());
 
         // let mut ime_state = IME_STATE.lock();
 
@@ -249,16 +249,23 @@ impl CompositionProcessorEngine {
         _is_incremental_word_search: bool,
         _is_wildcard_search: bool,
     ) -> Vec<(String, String)> {
-        let mut matches: Vec<(String, String)> = Vec::with_capacity(10);
+        let mut suggestion_set: HashSet<String> = HashSet::with_capacity(10);
+
         let keystroke_buffer = self.keystroke_buffer.get_reading_string();
 
-        let results = self.varnam_transliterate(&keystroke_buffer);
+        let varnam_suggestions: Vec<VarnamSuggestions> = self.varnam_transliterate(&keystroke_buffer);
 
-        for result in results {
-            matches.push((keystroke_buffer.clone(), result.to_string()))
+        for suggestion in varnam_suggestions {
+            suggestion_set.insert(suggestion.to_string());
         }
 
-        matches
+        let mut suggestions: Vec<(String, String)> = Vec::with_capacity(10);
+        
+        for suggestion in suggestion_set {
+            suggestions.push((keystroke_buffer.clone(), suggestion));
+        }
+
+        suggestions
     }
 
     pub fn get_candidate_string_in_converted(&self, search: &str) -> Vec<(String, String)> {

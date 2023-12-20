@@ -11,6 +11,8 @@ crate-type = ["rlib", "staticlib"]
 
 [dependencies]
 globals = { path = "../globals" }
+serde = { version = "1.0.193", features = ["derive"] }
+serde_json = "1.0.108"
 winreg = "0.10.1"
 
 [dependencies.windows]
