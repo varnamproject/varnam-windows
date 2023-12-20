@@ -9,12 +9,18 @@ cargo build --release
 Copy-Item "target\release\vlf_import.exe" -Destination "$scriptDir\x64\Debug\vlf_import.exe"
 Pop-Location
 
+Push-Location $scriptDir/../configure_languages
+cargo build --release
+Copy-Item "target\release\configure_languages.exe" -Destination "$scriptDir\x64\Debug\configure_languages.exe"
+Pop-Location
+
 Push-Location $scriptDir/../govarnam
 .\windows-build.bat
 gendef libgovarnam.dll
 lib /def:libgovarnam.def /OUT:libgovarnam.lib /MACHINE:X64
 Copy-Item "libgovarnam.dll" -Destination "$scriptDir\x64\Debug\libgovarnam.dll"
 Copy-Item "libgovarnam.lib" -Destination "$scriptDir\x64\Debug\libgovarnam.lib"
+
 Copy-Item -Path "schemes" -Destination "$scriptDir\x64\Debug" -Recurse
 New-Item -ItemType Directory -Path "$scriptDir\x64\Debug\schemes\learnings"
 New-Item -ItemType Directory -Path "$scriptDir\x64\Debug\schemes\vst"
@@ -23,8 +29,18 @@ Get-ChildItem "$scriptDir\x64\Debug\schemes" -Filter *.vst -Recurse | Copy-Item 
 Get-ChildItem "$scriptDir\x64\Debug\schemes" -Filter *.vlf -Recurse | Copy-Item -Destination "$scriptDir\x64\Debug\schemes\vlf"
 Get-ChildItem "$scriptDir\x64\Debug\schemes" -Recurse | Where-Object { $_.PSIsContainer -and $_.Name -notmatch '^(vst|learnings|vlf)$' } | Remove-Item -Recurse -Force
 Get-ChildItem "$scriptDir\x64\Debug\schemes" -File | Remove-Item -Force
+
+Copy-Item -Path "schemes" -Destination "$scriptDir\x64\Debug\schemes_bundle_for_installer" -Recurse
+New-Item -ItemType Directory -Path "$scriptDir\x64\Debug\schemes_bundle_for_installer\learnings"
+New-Item -ItemType Directory -Path "$scriptDir\x64\Debug\schemes_bundle_for_installer\vst"
+New-Item -ItemType Directory -Path "$scriptDir\x64\Debug\schemes_bundle_for_installer\vlf"
+Get-ChildItem "$scriptDir\x64\Debug\schemes_bundle_for_installer" -Filter *.vst -Recurse | Copy-Item -Destination "$scriptDir\x64\Debug\schemes_bundle_for_installer\vst"
+Get-ChildItem "$scriptDir\x64\Debug\schemes_bundle_for_installer" -Filter *.vlf -Recurse | Copy-Item -Destination "$scriptDir\x64\Debug\schemes_bundle_for_installer\vlf"
+Get-ChildItem "$scriptDir\x64\Debug\schemes_bundle_for_installer" -Recurse | Where-Object { $_.PSIsContainer -and $_.Name -notmatch '^(vst|learnings|vlf)$' } | Remove-Item -Recurse -Force
+Get-ChildItem "$scriptDir\x64\Debug\schemes_bundle_for_installer" -File | Remove-Item -Force
+
 & "$scriptDir\x64\Debug\vlf_import.exe" "$scriptDir\x64\Debug\schemes"
-New-Item -Path "$scriptDir\x64\Debug\debug.txt"
+# New-Item -Path "$scriptDir\x64\Debug\debug.txt"
 Pop-Location
 
 Push-Location $scriptDir/../rust

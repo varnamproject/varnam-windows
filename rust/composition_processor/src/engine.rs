@@ -249,6 +249,23 @@ impl CompositionProcessorEngine {
         _is_incremental_word_search: bool,
         _is_wildcard_search: bool,
     ) -> Vec<(String, String)> {
+        let mut matches: Vec<(String, String)> = Vec::with_capacity(10);
+        let keystroke_buffer = self.keystroke_buffer.get_reading_string();
+
+        let results = self.varnam_transliterate(&keystroke_buffer);
+
+        for result in results {
+            matches.push((keystroke_buffer.clone(), result.to_string()))
+        }
+
+        matches
+    }    
+
+    pub fn _get_candidate_list(
+        &self,
+        _is_incremental_word_search: bool,
+        _is_wildcard_search: bool,
+    ) -> Vec<(String, String)> {
         let mut suggestion_set: HashSet<String> = HashSet::with_capacity(10);
 
         let keystroke_buffer = self.keystroke_buffer.get_reading_string();
