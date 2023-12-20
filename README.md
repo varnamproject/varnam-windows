@@ -6,6 +6,8 @@ Easily type Indian languages on Windows using [Varnam transliteration engine](ht
 
 > This project is a hard-fork of [ime-rs](https://github.com/saschanaz/ime-rs) extended to support plugging [Varnam](https://github.com/varnamproject/govarnam) as the transliteration engine on native Windows IME.
 
+---
+
 ### Installation
 
 Download the latest executable "Varnam-Windows-Install.exe" from [Releases](https://github.com/varnamproject/varnam-windows/releases).
