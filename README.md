@@ -36,10 +36,9 @@ Varnam's Setup Wizard will automatically register the input method in your opera
 
 Make sure to enable Varnam by switching the toggle button in your Task Bar.
 
-![Varnam Toggle Switch](.assets/varnam-toggle.png)
-
 <div align="center">
 
+![Varnam Toggle Switch](.assets/varnam-toggle.png)
 ![Varnam Screenshot](.assets/varnam-screenshot.png)
 
 </div>
