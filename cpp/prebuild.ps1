@@ -45,6 +45,7 @@ Pop-Location
 
 Push-Location $scriptDir/../rust
 cargo build --release --target=x86_64-pc-windows-msvc
+cargo install cbindgen
 cbindgen --crate composition_processor --output ../cpp/SampleIME/cbindgen/composition_processor.h
 cbindgen --crate input_processor --output ../cpp/SampleIME/cbindgen/input_processor.h
 cbindgen --crate itf_components --output ../cpp/SampleIME/cbindgen/itf_components.h
