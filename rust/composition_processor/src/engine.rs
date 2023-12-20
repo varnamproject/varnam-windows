@@ -78,6 +78,21 @@ static LANG_MAP: Lazy<HashMap<u16, u32>> = Lazy::new(|| {
     m
 });
 
+use parking_lot::Mutex;
+
+#[derive(Clone)]
+pub struct ImeState {
+    pub key_state_vec: Vec<String>,
+    pub suggestions: Vec<String>
+}
+
+pub static _IME_STATE: Lazy<Mutex<ImeState>> = Lazy::new(|| Mutex::new({
+    ImeState {
+        key_state_vec: Vec::with_capacity(10),
+        suggestions: Vec::with_capacity(10)
+    }
+}));
+
 pub struct CompositionProcessorEngine {
     keystroke_buffer: KeystrokeBuffer,
     table_dictionary_engine: Option<TableDictionaryEngine>,
@@ -156,19 +171,19 @@ impl CompositionProcessorEngine {
         let active_langid = LANG_MAP.get(&active_lang_profile).unwrap();
 
         let (scheme_path, learning_path) = match active_langid {
-            &LANG_MALAYALAM => (dir.join("schemes/ml.vst"), dir.join("schemes/learnings/ml.vst.learnings")),
-            &LANG_ASSAMESE => (dir.join("schemes/as.vst"), dir.join("schemes/learnings/as.vst.learnings")),
-            &LANG_MARATHI => (dir.join("schemes/mr.vst"), dir.join("schemes/learnings/mr.vst.learnings")),
-            &LANG_BENGALI => (dir.join("schemes/bn.vst"), dir.join("schemes/learnings/bn.vst.learnings")),
-            &LANG_NEPALI => (dir.join("schemes/ne.vst"), dir.join("schemes/learnings/ne.vst.learnings")),
-            &LANG_GUJARATI => (dir.join("schemes/gu.vst"), dir.join("schemes/learnings/gu.vst.learnings")),
-            &LANG_ODIA => (dir.join("schemes/or.vst"), dir.join("schemes/learnings/or.vst.learnings")),
-            &LANG_HINDI => (dir.join("schemes/hi.vst"), dir.join("schemes/learnings/hi.vst.learnings")),
-            &LANG_PUNJABI => (dir.join("schemes/pa.vst"), dir.join("schemes/learnings/pa.vst.learnings")),
-            &LANG_KANNADA => (dir.join("schemes/kn.vst"), dir.join("schemes/learnings/kn.vst.learnings")),
-            &LANG_SANSKRIT => (dir.join("schemes/sa.vst"), dir.join("schemes/learnings/sa.vst.learnings")),
-            &LANG_TAMIL => (dir.join("schemes/ta.vst"), dir.join("schemes/learnings/ta.vst.learnings")),
-            &LANG_TELUGU => (dir.join("schemes/te.vst"), dir.join("schemes/learnings/te.vst.learnings")),
+            &LANG_MALAYALAM => (dir.join("schemes/vst/ml.vst"), dir.join("schemes/learnings/ml.vst.learnings")),
+            &LANG_ASSAMESE => (dir.join("schemes/vst/as.vst"), dir.join("schemes/learnings/as.vst.learnings")),
+            &LANG_MARATHI => (dir.join("schemes/vst/mr.vst"), dir.join("schemes/learnings/mr.vst.learnings")),
+            &LANG_BENGALI => (dir.join("schemes/vst/bn.vst"), dir.join("schemes/learnings/bn.vst.learnings")),
+            &LANG_NEPALI => (dir.join("schemes/vst/ne.vst"), dir.join("schemes/learnings/ne.vst.learnings")),
+            &LANG_GUJARATI => (dir.join("schemes/vst/gu.vst"), dir.join("schemes/learnings/gu.vst.learnings")),
+            &LANG_ODIA => (dir.join("schemes/vst/or.vst"), dir.join("schemes/learnings/or.vst.learnings")),
+            &LANG_HINDI => (dir.join("schemes/vst/hi.vst"), dir.join("schemes/learnings/hi.vst.learnings")),
+            &LANG_PUNJABI => (dir.join("schemes/vst/pa.vst"), dir.join("schemes/learnings/pa.vst.learnings")),
+            &LANG_KANNADA => (dir.join("schemes/vst/kn.vst"), dir.join("schemes/learnings/kn.vst.learnings")),
+            &LANG_SANSKRIT => (dir.join("schemes/vst/sa.vst"), dir.join("schemes/learnings/sa.vst.learnings")),
+            &LANG_TAMIL => (dir.join("schemes/vst/ta.vst"), dir.join("schemes/learnings/ta.vst.learnings")),
+            &LANG_TELUGU => (dir.join("schemes/vst/te.vst"), dir.join("schemes/learnings/te.vst.learnings")),
             _ => panic!("Unsupported language ID: {}", active_langid),
         };
 
@@ -184,6 +199,47 @@ impl CompositionProcessorEngine {
         };
 
         let results = varnam.transliterate(keystroke_buffer.to_owned());
+
+        // let mut ime_state = IME_STATE.lock();
+
+        // ime_state.suggestions = results.to_owned()
+        //     .into_iter()
+        //     .map(|s| s.to_string())
+        //     .collect();
+
+        // let mut selected_choice: Option<String> = None;
+        // let total_suggestions = ime_state.suggestions.len();
+        // let mut choice_index = 1;
+
+        // for key_state in ime_state.key_state_vec.to_owned() {
+        //     match key_state.as_str() {
+        //         "VK_UP" => {
+        //             if choice_index > 1 {
+        //                 choice_index -= 1;
+        //             }
+        //         },
+        //         "VK_DOWN" => {
+        //             if choice_index < total_suggestions {
+        //                 choice_index += 1;
+        //             }
+        //         },
+        //         "VK_RETURN" | "VK_SPACE" => {
+        //             if choice_index > 0 {
+        //                 selected_choice = Some(ime_state.suggestions[choice_index - 1].to_string());
+        //             }
+        //         },
+        //         _ => {}
+        //     }
+        // }
+
+        // if let Some(choice) = selected_choice {
+        //     *ime_state = ImeState {
+        //         key_state_vec: Vec::with_capacity(10),
+        //         suggestions: Vec::with_capacity(10)
+        //     };
+
+        //     // varnam_learn()
+        // }
 
         results
     }

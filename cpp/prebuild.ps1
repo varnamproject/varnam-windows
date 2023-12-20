@@ -1,6 +1,6 @@
 $scriptDir = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
 
-Get-ChildItem -Path $scriptDir -Include *.dll, *.pdb, *.exp -Recurse | ForEach-Object {Remove-Item $_.FullName -Force -Confirm:$false}
+Get-ChildItem -Path "$scriptDir\x64\Debug" -Recurse | ForEach-Object {Remove-Item $_.FullName -Force -Confirm:$false}
 
 rustup target add x86_64-pc-windows-msvc
 
@@ -24,6 +24,7 @@ Get-ChildItem "$scriptDir\x64\Debug\schemes" -Filter *.vlf -Recurse | Copy-Item 
 Get-ChildItem "$scriptDir\x64\Debug\schemes" -Recurse | Where-Object { $_.PSIsContainer -and $_.Name -notmatch '^(vst|learnings|vlf)$' } | Remove-Item -Recurse -Force
 Get-ChildItem "$scriptDir\x64\Debug\schemes" -File | Remove-Item -Force
 & "$scriptDir\x64\Debug\vlf_import.exe" "$scriptDir\x64\Debug\schemes"
+New-Item -Path "$scriptDir\x64\Debug\debug.txt"
 Pop-Location
 
 Push-Location $scriptDir/../rust

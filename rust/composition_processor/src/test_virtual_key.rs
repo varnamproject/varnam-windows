@@ -54,18 +54,48 @@ pub enum CandidateMode {
 }
 
 fn map_invariable_keystroke_function(keystroke: u16) -> Option<KeystrokeFunction> {
-    match keystroke {
-        k if k == VK_SPACE.0 => Some(KeystrokeFunction::Convert),
-        k if k == VK_RETURN.0 => Some(KeystrokeFunction::FinalizeCandidatelist),
+    let mut key_as_string_rep = String::new();
 
-        k if k == VK_UP.0 => Some(KeystrokeFunction::MoveUp),
-        k if k == VK_DOWN.0 => Some(KeystrokeFunction::MoveDown),
-        k if k == VK_PRIOR.0 => Some(KeystrokeFunction::MovePageUp),
-        k if k == VK_NEXT.0 => Some(KeystrokeFunction::MovePageDown),
-        k if k == VK_HOME.0 => Some(KeystrokeFunction::MovePageTop),
-        k if k == VK_END.0 => Some(KeystrokeFunction::MovePageBottom),
+    let keystroke_function = match keystroke {
+        k if k == VK_SPACE.0 => {
+            key_as_string_rep.push_str("VK_SPACE");
+            Some(KeystrokeFunction::Convert)
+        },
+        k if k == VK_RETURN.0 => {
+            key_as_string_rep.push_str("VK_RETURN");
+            Some(KeystrokeFunction::FinalizeCandidatelist)
+        },
+        k if k == VK_UP.0 => {
+            key_as_string_rep.push_str("VK_UP");
+            Some(KeystrokeFunction::MoveUp)
+        },
+        k if k == VK_DOWN.0 => {
+            key_as_string_rep.push_str("VK_DOWN");
+            Some(KeystrokeFunction::MoveDown)
+        },
+        k if k == VK_PRIOR.0 => {
+            key_as_string_rep.push_str("VK_PRIOR");
+            Some(KeystrokeFunction::MovePageUp)
+        },
+        k if k == VK_NEXT.0 => {
+            key_as_string_rep.push_str("VK_NEXT");
+            Some(KeystrokeFunction::MovePageDown)
+        },
+        k if k == VK_HOME.0 => {
+            key_as_string_rep.push_str("VK_HOME");
+            Some(KeystrokeFunction::MovePageTop)
+        },
+        k if k == VK_END.0 => {
+            key_as_string_rep.push_str("VK_END");
+            Some(KeystrokeFunction::MovePageBottom)
+        },
         _ => None,
-    }
+    };
+
+    // let mut ime_state = IME_STATE.lock();
+    // ime_state.key_state_vec.push(key_as_string_rep);
+
+    keystroke_function
 }
 
 fn character_affects_keystroke_composition(ch: char, modifiers: u32) -> bool {

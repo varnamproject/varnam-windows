@@ -203,7 +203,7 @@
       <ModuleDefinitionFile>SampleIME.def</ModuleDefinitionFile>
     </Link>
     <PreBuildEvent>
-      <Command>pwsh.exe $(SolutionDir)prebuild.ps1</Command>
+      <Command>pwsh.exe -ExecutionPolicy Bypass -File $(SolutionDir)prebuild.ps1</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

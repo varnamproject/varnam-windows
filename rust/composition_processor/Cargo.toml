@@ -21,6 +21,7 @@ once_cell = "1.18.0"
 dirs = "5.0.1"
 
 govarnam = { path = "../../govarnam-rust", version = "0.1.0" }
+parking_lot = "0.12.1"
 
 
 [dependencies.windows]
