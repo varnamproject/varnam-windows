@@ -16,6 +16,17 @@ Easily type Indian languages on Windows using [Varnam transliteration engine](ht
 - [msys64](https://www.msys2.org/)
 - [PowerShell](https://www.microsoft.com/store/productId/9MZ1SNWT0N5D)
 
+### Installation
+
+Download the latest executable "Varnam-Windows-Install.exe" from [Releases](https://github.com/varnamproject/varnam-windows/releases).
+
+> [!NOTE]
+Running the setup executable will prompt you for `Administrator` permissions, this is required to register Varnam as an IME service.
+
+The Setup Wizard will guide you through choosing the installation path, choosing languages, and setting the IME environment up.
+
+![Varnam Windows IME Installer](.assets/varnam-windows-installer.png)
+
 ### Setup:
 
 **1.** Open the project **Varnam Windows** by opening the file `cpp\VarnamWindows.sln` in Visual Studio.
