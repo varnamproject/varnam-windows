@@ -4,4 +4,4 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-govarnam = { path = "..", version = "0.1.0" }
+govarnam = { path = "../govarnam-rust", version = "0.1.0" }

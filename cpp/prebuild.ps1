@@ -2,6 +2,13 @@ $scriptDir = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
 
 Get-ChildItem -Path $scriptDir -Include *.dll, *.pdb, *.exp -Recurse | ForEach-Object {Remove-Item $_.FullName -Force -Confirm:$false}
 
+rustup target add x86_64-pc-windows-msvc
+
+Push-Location $scriptDir/../vlf_import
+cargo build --release
+Copy-Item "target\release\vlf_import.exe" -Destination "$scriptDir\x64\Debug\vlf_import.exe"
+Pop-Location
+
 Push-Location $scriptDir/../govarnam
 .\windows-build.bat
 gendef libgovarnam.dll
@@ -16,10 +23,10 @@ Get-ChildItem "$scriptDir\x64\Debug\schemes" -Filter *.vst -Recurse | Copy-Item 
 Get-ChildItem "$scriptDir\x64\Debug\schemes" -Filter *.vlf -Recurse | Copy-Item -Destination "$scriptDir\x64\Debug\schemes\vlf"
 Get-ChildItem "$scriptDir\x64\Debug\schemes" -Recurse | Where-Object { $_.PSIsContainer -and $_.Name -notmatch '^(vst|learnings|vlf)$' } | Remove-Item -Recurse -Force
 Get-ChildItem "$scriptDir\x64\Debug\schemes" -File | Remove-Item -Force
+& "$scriptDir\x64\Debug\vlf_import.exe" "$scriptDir\x64\Debug\schemes"
 Pop-Location
 
 Push-Location $scriptDir/../rust
-rustup target add x86_64-pc-windows-msvc
 cargo build --release --target=x86_64-pc-windows-msvc
 cbindgen --crate composition_processor --output ../cpp/SampleIME/cbindgen/composition_processor.h
 cbindgen --crate input_processor --output ../cpp/SampleIME/cbindgen/input_processor.h
