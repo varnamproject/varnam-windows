@@ -6,16 +6,6 @@ Easily type Indian languages on Windows using [Varnam transliteration engine](ht
 
 > This project is a hard-fork of [ime-rs](https://github.com/saschanaz/ime-rs) extended to support plugging [Varnam](https://github.com/varnamproject/govarnam) as the transliteration engine on native Windows IME.
 
-## Build
-
-**Prerequisites:**
-- Windows 64 bit
-- [Visual Studio](https://visualstudio.microsoft.com/downloads/) (Including command-line utils: `lib.exe` and `gendef.exe`)
-- [Rust](https://www.rust-lang.org/) and [Cargo](https://doc.rust-lang.org/cargo/getting-started/installation.html)
-- [Go](https://go.dev/)
-- [msys64](https://www.msys2.org/)
-- [PowerShell](https://www.microsoft.com/store/productId/9MZ1SNWT0N5D)
-
 ### Installation
 
 Download the latest executable "Varnam-Windows-Install.exe" from [Releases](https://github.com/varnamproject/varnam-windows/releases).
@@ -25,7 +15,21 @@ Running the setup executable will prompt you for `Administrator` permissions, th
 
 The Setup Wizard will guide you through choosing the installation path, choosing languages, and setting the IME environment up.
 
+<div align="center">
+
 ![Varnam Windows IME Installer](.assets/varnam-windows-installer.png)
+
+</div>
+
+## Build
+
+**Prerequisites:**
+- Windows 64 bit
+- [Visual Studio](https://visualstudio.microsoft.com/downloads/) (Including command-line utils: `lib.exe` and `gendef.exe`)
+- [Rust](https://www.rust-lang.org/) and [Cargo](https://doc.rust-lang.org/cargo/getting-started/installation.html)
+- [Go](https://go.dev/)
+- [msys64](https://www.msys2.org/)
+- [PowerShell](https://www.microsoft.com/store/productId/9MZ1SNWT0N5D)
 
 ### Setup:
 
