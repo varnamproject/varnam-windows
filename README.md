@@ -23,6 +23,27 @@ The Setup Wizard will guide you through choosing the installation path, choosing
 
 </div>
 
+### Using Varnam
+
+Varnam's Setup Wizard will automatically register the input method in your operating system. If "Varnam Windows" does not show up in your input language section drawer (`Win + Space`), follow these steps:
+
+1. Open Settings.
+2. Navigate to `Time & Language`, then select `Language`.
+3. Click on `Add a language` and search for the desired language from the search window pop up.
+4. Click on the installed language and select `Options`.
+5. In the `Keyboard` options, click on `Add a keyboard` and select `Varnam Windows`.
+6. `Varnam Windows` should now appear as an input method in your language selection drawer.
+
+Make sure to enable Varnam by switching the toggle button in your Task Bar.
+
+![Varnam Toggle Switch](.assets/varnam-toggle.png)
+
+<div align="center">
+
+![Varnam Screenshot](.assets/varnam-screenshot.png)
+
+</div>
+
 ## Build
 
 **Prerequisites:**
