@@ -56,3 +56,17 @@ cbindgen --crate ruststringrange --output ../cpp/SampleIME/cbindgen/ruststringra
 cbindgen --crate govarnam --output ../cpp/SampleIME/cbindgen/govarnam.h
 Copy-Item "languages_enabled_config.json" -Destination "$scriptDir\x64\Debug\languages_enabled_config.json"
 Pop-Location
+
+# Copy DLL files to the Debug directory
+$system32Path = "C:\Windows\System32"
+$dllFiles = @("MSVCP140D.dll", "MSVCP140D_CODECVT_IDS.dll", "VCRUNTIME140D.dll", "VCRUNTIME140_1D.dll")
+foreach ($dll in $dllFiles) {
+    $sourcePath = Join-Path -Path $system32Path -ChildPath $dll
+    $destPath = Join-Path -Path "$scriptDir\x64\Debug" -ChildPath $dll
+    if (Test-Path -Path $sourcePath) {
+        Copy-Item -Path $sourcePath -Destination $destPath
+        Write-Host "Copied $dll to $scriptDir\x64\Debug"
+    } else {
+        Write-Host "$dll not found in $system32Path"
+    }
+}

@@ -38,6 +38,10 @@ Source: "cpp\x64\Debug\vlf_import.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "cpp\x64\Debug\configure_languages.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "cpp\x64\Debug\schemes_bundle_for_installer\*"; DestDir: "{app}\schemes"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "cpp\x64\Debug\languages_enabled_config.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "cpp\x64\Debug\MSVCP140D.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "cpp\x64\Debug\MSVCP140D_CODECVT_IDS.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "cpp\x64\Debug\VCRUNTIME140D.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "cpp\x64\Debug\VCRUNTIME140_1D.dll"; DestDir: "{app}"; Flags: ignoreversion
 
 [Code]
 var
